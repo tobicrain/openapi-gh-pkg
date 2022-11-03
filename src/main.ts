@@ -1,4 +1,7 @@
 import * as core from "@actions/core";
+import * as path from "path";
+import * as fs from "fs";
+import GithubService from "./services/GithubService";
 import Constants from "./util/constants";
 // import GithubService from "./services/GithubService";
 
@@ -7,10 +10,10 @@ import Constants from "./util/constants";
     core.notice("Hello World!");
     const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
     core.notice(`OpenAPI file path: ${openApiPath}`);
-    // const fileContent = await GithubService.content(openApiPath);
-    // const openApiFile = path.join(__dirname, 'openapi.yaml');
-    // fs.writeFileSync(openApiFile, fileContent);
-    // core.notice(`OpenAPI file saved to: ${openApiFile}`);
+    const fileContent = await GithubService.content(openApiPath);
+    const openApiFile = path.join(__dirname, 'openapi.yaml');
+    fs.writeFileSync(openApiFile, fileContent);
+    core.notice(`OpenAPI file saved to: ${openApiFile}`);
     // core.notice("auwdhiaw")
     // const { exec } = require('child_process');
     // core.notice("jrutzr")
