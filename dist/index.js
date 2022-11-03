@@ -43,6 +43,7 @@ const core = __importStar(__nccwpck_require__(186));
 // import GithubService from "./services/GithubService";
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        core.notice("Hello World!");
         const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
         core.notice(`OpenAPI file path: ${openApiPath}`);
         // const fileContent = await GithubService.content(openApiPath);

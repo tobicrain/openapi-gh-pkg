@@ -3,6 +3,7 @@ import * as core from "@actions/core";
 
 (async () => {
   try {
+    core.notice("Hello World!");
     const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
     core.notice(`OpenAPI file path: ${openApiPath}`);
     // const fileContent = await GithubService.content(openApiPath);
