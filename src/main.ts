@@ -1,13 +1,21 @@
 import * as core from "@actions/core"
-const fs = require('fs');
+import { promises as fsPromises } from 'fs';
+import { join } from 'path';
 
-async function asyncRead(filename: string, encoding: string): Promise<Buffer> {
-    return await new Promise((resolve, _)=>{
-        fs.readFile(filename, encoding, function(err: Error, data: Buffer) {
-          if (err) throw err;
-          resolve(data);
-        });
-    });
+async function asyncReadFile(filename: string) {
+  try {
+    const result = await fsPromises.readFile(
+      join(__dirname, filename),
+      'utf-8',
+    );
+
+    console.log(result); // 👉️ "hello world hello world ..."
+
+    return result;
+  } catch (err) {
+    console.log(err);
+    return 'Something went wrong'
+  }
 }
 
 (
@@ -21,7 +29,7 @@ async function asyncRead(filename: string, encoding: string): Promise<Buffer> {
     // });
     try {
       const openApiFile = core.getInput("open_api_file");
-      const openApiFileContent = await asyncRead(openApiFile, "utf8");
+      const openApiFileContent = await asyncReadFile(openApiFile);
       console.log(openApiFileContent);
       core.notice("Calling our action");
     } catch (error) {
