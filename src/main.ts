@@ -17,8 +17,8 @@ const { exec } = require('child_process');
     const openApiFile = path.join(__dirname, 'openapi.yaml');
     fs.writeFileSync(openApiFile, fileContent);
     core.notice(`OpenAPI file saved to: ${openApiFile}`);
-    
-    exec('npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g kotlin-spring -o kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api');
+    core.notice(`${__dirname}/kotlin`)
+    exec(`npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api`);
 
     // list files in current directory
     exec(`cd ${__dirname}; ls`, (err, stdout, stderr) => {
