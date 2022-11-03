@@ -1,4 +1,5 @@
 import * as core from "@actions/core"
+const { promises: fs } = require('fs')
 
 (
   async () => {
@@ -11,7 +12,7 @@ import * as core from "@actions/core"
     // });
     try {
       const openApiFile = core.getInput("open_api_file");
-      console.log(openApiFile)
+      const openApiFileContent = fs.readFileSync(openApiFile, "utf8");
       
       core.notice("Calling our action");
     } catch (error) {
