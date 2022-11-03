@@ -42,10 +42,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    // get file from repo in the same workflow on github actions
-    // const octokit = github.getOctokit(core.getInput('token'));
     try {
-        const openApiPath = core.getInput("open_api_file");
+        const openApiPath = core.getInput("OPEN_API_FILE_PATH");
         const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
         const { data } = yield github.getOctokit(GITHUB_TOKEN).rest.repos.getContent({
             owner: github.context.repo.owner,
@@ -57,7 +55,7 @@ const github = __importStar(__nccwpck_require__(5438));
         core.notice("Calling our action");
     }
     catch (error) {
-        console.error(error);
+        core.error(JSON.stringify(error));
     }
 }))();
 // npx @openapitools/openapi-generator-cli generate -i api.yaml -g kotlin-spring -o kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api
