@@ -108,7 +108,9 @@ function readDir() {
                     if (err)
                         return console.log(err);
                     console.log('pom.xml updated');
-                    fs.writeFile(__dirname + '/settings.xml', "<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_TOKEN}</password></server></servers></settings>", 'utf8', function (err) {
+                    const GITHUB_USERNAME = core.getInput(constants_1.default.GITHUB_USERNAME);
+                    const GITHUB_TOKEN = core.getInput(constants_1.default.GITHUB_TOKEN);
+                    fs.writeFile(__dirname + '/settings.xml', `<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_TOKEN}</password></server></servers></settings>`, 'utf8', function (err) {
                         if (err)
                             return console.log(err);
                         console.log('settings.xml updated');
@@ -217,6 +219,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 class Constants {
 }
 exports["default"] = Constants;
+Constants.GITHUB_USERNAME = "GITHUB_USERNAME";
 Constants.GITHUB_TOKEN = "GITHUB_TOKEN";
 Constants.OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
 

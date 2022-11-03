@@ -71,7 +71,9 @@ function readDir() {
         fs.writeFile(__dirname + '/kotlin/pom.xml', newData, 'utf8', function (err) {
           if (err) return console.log(err);
           console.log('pom.xml updated');
-          fs.writeFile(__dirname + '/settings.xml', "<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_TOKEN}</password></server></servers></settings>", 'utf8', function (err) {
+          const GITHUB_USERNAME = core.getInput(Constants.GITHUB_USERNAME);
+          const GITHUB_TOKEN = core.getInput(Constants.GITHUB_TOKEN);
+          fs.writeFile(__dirname + '/settings.xml', `<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_TOKEN}</password></server></servers></settings>`, 'utf8', function (err) {
             if (err) return console.log(err);
             console.log('settings.xml updated');
             readDir();

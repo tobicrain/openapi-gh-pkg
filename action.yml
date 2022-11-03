@@ -5,6 +5,9 @@ inputs:
     description: "Path to openapi file"
     required: true
     default: "api.yml"
+  GITHUB_USERNAME:
+    description: "Your Github Username"
+    required: true
   GITHUB_TOKEN:
     description: "Your Github Secret"
     required: true
