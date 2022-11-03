@@ -6,15 +6,16 @@ const path = require('path');
 (async () => {
   try {
     const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
+    core.notice(`OpenAPI file path: ${openApiPath}`);
     const fileContent = await GithubService.content(openApiPath);
-    // write file to current folder
-    console.log("ijgiotfjhof")
-    fs.writeFileSync("openapi.yaml", fileContent);
-    console.log("auwdhiaw")
+    const openApiFile = path.join(__dirname, 'openapi.yaml');
+    fs.writeFileSync(openApiFile, fileContent);
+    core.notice(`OpenAPI file saved to: ${openApiFile}`);
+    core.notice("auwdhiaw")
     const { exec } = require('child_process');
-    console.log("jrutzr")
+    core.notice("jrutzr")
     const hello = exec('npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g kotlin-spring -o kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api');
-    console.log("gfhfgh")
+    core.notice("gfhfgh")
     core.notice(hello);
   } catch (error) {
 
