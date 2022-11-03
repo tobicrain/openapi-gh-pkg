@@ -29,8 +29,11 @@ async function asyncReadFile(filename: string) {
     // });
     try {
       const openApiFile = core.getInput("open_api_file");
+      console.log("openApiFile", openApiFile);
+      core.notice(openApiFile);
       const openApiFileContent = await asyncReadFile(openApiFile);
-      console.log(openApiFileContent);
+      console.log("openApiFileContent", openApiFileContent);
+      core.notice(openApiFileContent);
       core.notice("Calling our action");
     } catch (error) {
       console.error(error);
