@@ -18,8 +18,8 @@ const distributionManagement = `
 `;
 
 const properties = `
-  <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
-</properties>`;
+    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+  </properties>`;
 
 function readDir() {
   exec(`ls`, (err, stdout, stderr) => {
@@ -73,16 +73,17 @@ function readDir() {
         fs.writeFile(__dirname + '/kotlin/pom.xml', newData, 'utf8', function (err) {
           if (err) return console.log(err);
           console.log('pom.xml updated');
+          exec('echo "<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml', (error2: any, stdout2: any, stderr2: any) => {
+            console.log(stdout2);
+            console.log(stderr2);
+            exec(`cd ${__dirname}/kotlin; mvn deploy`, (_error: any, _stdout: any, _stderr: any) => {
+              console.log(_stdout);
+              console.log(_stderr);
+              console.log("DONE")
+            });
+          });
         });
       });
-
-      // exec(`sudo apt-get install rpl; rpl "</project>" "$(cat distributionManagement.txt)</project>" kotlin/pom.xml; rpl "</properties>" "<spring-boot.repackage.skip>true</spring-boot.repackage.skip></properties>" kotlin/pom.xml;`, (error: any, stdout: any, stderr: any) => {
-      //   console.log(`stdout: ${stdout}`);
-      //   console.log(`stderr: ${stderr}`);
-      //   if (error !== null) {
-      //       console.log(`exec error: ${error}`);
-      //   }
-      // })
     });
   } catch (error) {
 
