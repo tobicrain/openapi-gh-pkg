@@ -16,8 +16,9 @@
 # )
 
 
-sed -i '' -e '$ d' kotlin/pom.xml
-printf "$(cat distributionManagement.txt)" >> kotlin/pom.xml
+# sed -i '' -e '$ d' kotlin/pom.xml
+# printf "$(cat distributionManagement.txt)" >> kotlin/pom.xml
 
+rpl "</project>" "$(cat distributionManagement.txt)</project>" kotlin/pom.xml
 rpl "</properties>" "<spring-boot.repackage.skip>true</spring-boot.repackage.skip></properties>" kotlin/pom.xml
 # sed '/<\/properties>/e cat properties.txt' kotlin/pom.xml
