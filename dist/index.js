@@ -57,9 +57,9 @@ const { exec } = __nccwpck_require__(2081);
         const openApiFile = path.join(__dirname, 'openapi.yaml');
         fs.writeFileSync(openApiFile, fileContent);
         core.notice(`OpenAPI file saved to: ${openApiFile}`);
-        core.notice(`${__dirname}/kotlin`);
-        const hello = exec(`npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g kotlin-spring -o kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api`);
-        console.log(hello);
+        const { stdout, stderr } = yield exec(`npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g kotlin-spring -o kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api`);
+        console.log('stdout:', stdout);
+        console.log('stderr:', stderr);
         exec(`ls`, (err, stdout, stderr) => {
             if (err) {
                 //some err occurred
