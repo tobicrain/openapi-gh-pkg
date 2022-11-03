@@ -73,13 +73,18 @@ function readDir() {
         fs.writeFile(__dirname + '/kotlin/pom.xml', newData, 'utf8', function (err) {
           if (err) return console.log(err);
           console.log('pom.xml updated');
-          exec('echo "<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml', (error2: any, stdout2: any, stderr2: any) => {
-            console.log(stdout2);
-            console.log(stderr2);
-            exec(`cd ${__dirname}/kotlin; mvn deploy`, (_error: any, _stdout: any, _stderr: any) => {
-              console.log(_stdout);
-              console.log(_stderr);
-              console.log("DONE")
+          //exec('echo "<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml', (error2: any, stdout2: any, stderr2: any) => {
+          // write file at path __dirname + /settings.xml
+          fs.writeFile(__dirname + '/settings.xml', "<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_TOKEN}</password></server></servers></settings>", 'utf8', function (err) {
+            if (err) return console.log(err);
+            console.log('settings.xml updated');
+            exec(`cd ${__dirname}/kotlin; mvn deploy -s ${__dirname}/settings.xml`, (error3: any, stdout3: any, stderr3: any) => {
+              console.log(`stdout3: ${stdout3}`);
+              console.log(`stderr3: ${stderr3}`);
+              if (error3) {
+                console.log(`error3: ${error3.message}`);
+                return;
+              }
             });
           });
         });
