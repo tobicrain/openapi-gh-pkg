@@ -40,6 +40,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
+const fs_1 = __nccwpck_require__(147);
+const path_1 = __nccwpck_require__(17);
+function asyncReadFile(filename) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield fs_1.promises.readFile((0, path_1.join)(__dirname, filename), 'utf-8');
+            console.log(result); // 👉️ "hello world hello world ..."
+            return result;
+        }
+        catch (err) {
+            console.log(err);
+            return 'Something went wrong';
+        }
+    });
+}
 (() => __awaiter(void 0, void 0, void 0, function* () {
     // get file from repo in the same workflow on github actions
     // const octokit = github.getOctokit(core.getInput('token'));
@@ -50,7 +65,11 @@ const core = __importStar(__nccwpck_require__(186));
     // });
     try {
         const openApiFile = core.getInput("open_api_file");
-        console.log(openApiFile);
+        console.log("openApiFile", openApiFile);
+        core.notice(openApiFile);
+        const openApiFileContent = yield asyncReadFile(openApiFile);
+        console.log("openApiFileContent", openApiFileContent);
+        core.notice(openApiFileContent);
         core.notice("Calling our action");
     }
     catch (error) {
