@@ -1,0 +1,8 @@
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub tandamo Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/tandamo/scanq-client-api</url>
+        </repository>
+    </distributionManagement>
+</project>
