@@ -1,13 +1,11 @@
 import * as core from "@actions/core";
-import GithubService from "./services/GithubService";
-const fs = require('fs');
-const path = require('path');
+// import GithubService from "./services/GithubService";
 
 (async () => {
   try {
     const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
     core.notice(`OpenAPI file path: ${openApiPath}`);
-    const fileContent = await GithubService.content(openApiPath);
+    // const fileContent = await GithubService.content(openApiPath);
     // const openApiFile = path.join(__dirname, 'openapi.yaml');
     // fs.writeFileSync(openApiFile, fileContent);
     // core.notice(`OpenAPI file saved to: ${openApiFile}`);
