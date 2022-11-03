@@ -10,7 +10,7 @@
     "commit": "git commit -m \"update\"",
     "push": "git push",
     "git": "npm run add && npm run commit && npm run push",
-    "update": "npm run clean; npm run git; npm run build;"
+    "update": "npm run clean; npm run build; npm run git;"
   },
   "repository": {
     "type": "git",
