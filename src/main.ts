@@ -10,10 +10,14 @@ import core from '@actions/core';
     //   repo: github.context.repo.repo,
     //   path: core.getInput('path'),
     // });
-    const openApiFile = core.getInput("open_api_file");
-    console.log(openApiFile)
-    
-    core.notice("Calling our action");
+    try {
+      const openApiFile = core.getInput("open_api_file");
+      console.log(openApiFile)
+      
+      core.notice("Calling our action");
+    } catch (error) {
+      console.error(error);
+    }
   }
 )();
 
