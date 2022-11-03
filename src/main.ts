@@ -22,7 +22,7 @@ async function asyncRead(filename: string, encoding: string): Promise<Buffer> {
     try {
       const openApiFile = core.getInput("open_api_file");
       const openApiFileContent = await asyncRead(openApiFile, "utf8");
-      console.log(openApiFileContent.toString());
+      console.log(openApiFileContent);
       core.notice("Calling our action");
     } catch (error) {
       console.error(error);
