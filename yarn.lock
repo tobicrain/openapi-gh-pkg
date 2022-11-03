@@ -113,11 +113,6 @@
   dependencies:
     "@octokit/openapi-types" "^12.11.0"
 
-"@types/node@^18.11.9":
-  "integrity" "sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg=="
-  "resolved" "https://registry.npmjs.org/@types/node/-/node-18.11.9.tgz"
-  "version" "18.11.9"
-
 "@vercel/ncc@^0.34.0":
   "integrity" "sha512-G9h5ZLBJ/V57Ou9vz5hI8pda/YQX5HQszCs3AmIus3XzsmRn/0Ptic5otD3xVST8QLKk7AMk7AqpsyQGN7MZ9A=="
   "resolved" "https://registry.npmjs.org/@vercel/ncc/-/ncc-0.34.0.tgz"
@@ -151,6 +146,11 @@
   "version" "1.4.0"
   dependencies:
     "wrappy" "1"
+
+"prettier@^2.7.1":
+  "integrity" "sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g=="
+  "resolved" "https://registry.npmjs.org/prettier/-/prettier-2.7.1.tgz"
+  "version" "2.7.1"
 
 "tr46@~0.0.3":
   "integrity" "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw=="
