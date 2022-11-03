@@ -19,7 +19,7 @@ async function getGithubFileContent(filePath: string): Promise<string> {
 (
   async () => {
     try {
-      const openApiPath = "awod";
+      const openApiPath = core.getInput("OPEN_API_FILE_PATH");
       const fileContent = await getGithubFileContent(openApiPath);
       core.notice(fileContent);
       core.notice("Calling our action");

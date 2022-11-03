@@ -60,7 +60,7 @@ function getGithubFileContent(filePath) {
 }
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const openApiPath = "awod";
+        const openApiPath = core.getInput("OPEN_API_FILE_PATH");
         const fileContent = yield getGithubFileContent(openApiPath);
         core.notice(fileContent);
         core.notice("Calling our action");
