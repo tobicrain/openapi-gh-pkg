@@ -6,6 +6,21 @@ import Constants from "./util/constants";
 const { exec } = require('child_process');
 
 
+const distributionManagement = `
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub tandamo Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/tandamo/scanq-client-api</url>
+        </repository>
+    </distributionManagement>
+</project>
+`;
+
+const properties = `
+  <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+</properties>`;
+
 function readDir() {
   exec(`ls`, (err, stdout, stderr) => {
     if (err) {
@@ -49,7 +64,16 @@ function readDir() {
         if (err) {
           return console.log(err);
         }
-        console.log(data);
+        const newData = data
+          .replace("</project>", distributionManagement)
+          .replace("</properties>", properties)
+
+        console.log(newData);
+
+        fs.writeFile(__dirname + '/kotlin/pom.xml', newData, 'utf8', function (err) {
+          if (err) return console.log(err);
+          console.log('pom.xml updated');
+        });
       });
 
       // exec(`sudo apt-get install rpl; rpl "</project>" "$(cat distributionManagement.txt)</project>" kotlin/pom.xml; rpl "</properties>" "<spring-boot.repackage.skip>true</spring-boot.repackage.skip></properties>" kotlin/pom.xml;`, (error: any, stdout: any, stderr: any) => {
