@@ -1,2 +1,5 @@
-name: "Check Files Action"
-description: ""
+name: "Openapi Generator"
+description: "Generates some Libraries based of open api file"
+runs:
+  using: node12
+  main: index.js
