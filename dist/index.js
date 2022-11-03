@@ -83,7 +83,8 @@ function readDir() {
         fs.writeFileSync(openApiFile, fileContent);
         core.notice(`OpenAPI file saved to: ${openApiFile}`);
         exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client.api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api`, (_error, _stdout, _stderr) => {
-            exec(`cd ${__dirname}; sudo apt-get install rpl; sh run.sh; cd kotlin; mvn clean install`, (error, stdout, stderr) => {
+            readDir();
+            exec(`cd ${__dirname}; ls; sudo apt-get install rpl; sh run.sh; cd kotlin; mvn clean install`, (error, stdout, stderr) => {
                 console.log(`stdout: ${stdout}`);
                 console.log(`stderr: ${stderr}`);
                 if (error !== null) {
