@@ -47,7 +47,7 @@ const path = __importStar(__nccwpck_require__(1017));
 const fs = __importStar(__nccwpck_require__(7147));
 const GithubService_1 = __importDefault(__nccwpck_require__(3035));
 const constants_1 = __importDefault(__nccwpck_require__(4434));
-// import GithubService from "./services/GithubService";
+const { exec } = __nccwpck_require__(2081);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         core.notice("Hello World!");
@@ -57,12 +57,8 @@ const constants_1 = __importDefault(__nccwpck_require__(4434));
         const openApiFile = path.join(__dirname, 'openapi.yaml');
         fs.writeFileSync(openApiFile, fileContent);
         core.notice(`OpenAPI file saved to: ${openApiFile}`);
-        // core.notice("auwdhiaw")
-        // const { exec } = require('child_process');
-        // core.notice("jrutzr")
-        // const hello = exec('npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g kotlin-spring -o kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api');
-        core.notice("gfhfgh");
-        // core.notice(hello);
+        const hello = exec('npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g kotlin-spring -o kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api');
+        core.notice(hello);
     }
     catch (error) {
         core.error(JSON.stringify(error));
@@ -9680,6 +9676,14 @@ module.exports = eval("require")("encoding");
 
 "use strict";
 module.exports = require("assert");
+
+/***/ }),
+
+/***/ 2081:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("child_process");
 
 /***/ }),
 
