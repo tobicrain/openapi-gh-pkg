@@ -1,8 +1,7 @@
 import * as core from "@actions/core"
 import * as github from "@actions/github"
 
-
-async function getGithubFileContent(filePath: string) {
+async function getGithubFileContent(filePath: string): Promise<string> {
     const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
     const { data } = await github.getOctokit(GITHUB_TOKEN).rest.repos.getContent({
       owner: github.context.repo.owner,
@@ -20,7 +19,7 @@ async function getGithubFileContent(filePath: string) {
 (
   async () => {
     try {
-      const openApiPath = core.getInput("OPEN_API_FILE_PATH");
+      const openApiPath = "awod";
       const fileContent = await getGithubFileContent(openApiPath);
       core.notice(fileContent);
       core.notice("Calling our action");
