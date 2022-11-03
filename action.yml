@@ -1,8 +1,10 @@
 name: "Openapi Generator"
 description: "Generates some Libraries based of open api file"
 inputs:
-  openapi:
-    description: "Path to openapi yml"
+  open_api_file:
+    description: "Path to openapi file"
+    required: true
+    default: 'api.yml'
 runs:
   using: node12
-  main: index.js
+  main: 'dist/index.js'
