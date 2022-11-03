@@ -4,7 +4,8 @@
   "description": "",
   "main": "lib/main.js",
   "scripts": {
-    "build": "tsc && ncc build lib/main.js"
+    "build": "tsc && ncc build lib/main.js",
+    "update": "npm run build; git add .;git commit -m \"update\";git push;"
   },
   "repository": {
     "type": "git",

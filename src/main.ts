@@ -1,23 +1,28 @@
 import * as core from "@actions/core"
 import * as github from "@actions/github"
 
+
+async function getGithubFileContent(filePath: string) {
+    const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
+    const { data } = await github.getOctokit(GITHUB_TOKEN).rest.repos.getContent({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      path: filePath
+    });
+    const contentString = (data as any)?.content as string | null;
+    if (contentString) {
+      return Buffer.from(contentString, "base64").toString();
+    } else {
+      throw new Error(`Could not find file at ${filePath}`);
+    }
+}
+
 (
   async () => {
     try {
       const openApiPath = core.getInput("OPEN_API_FILE_PATH");
-      const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
-      const { data } = await github.getOctokit(GITHUB_TOKEN).rest.repos.getContent({
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        path: openApiPath
-      });
-      const contentString = (data as any)?.content as string | null;
-      if (contentString) {
-        const openApiContent = Buffer.from(contentString, "base64").toString();
-        core.notice(openApiContent);
-      } else {
-        core.setFailed("No content found");
-      }
+      const fileContent = await getGithubFileContent(openApiPath);
+      core.notice(fileContent);
       core.notice("Calling our action");
     } catch (error) {
       core.error(JSON.stringify(error));
