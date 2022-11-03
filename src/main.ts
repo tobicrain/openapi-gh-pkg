@@ -1,39 +1,23 @@
 import * as core from "@actions/core"
-import { promises as fsPromises } from 'fs';
-import { join } from 'path';
-
-async function asyncReadFile(filename: string) {
-  try {
-    const result = await fsPromises.readFile(
-      join(__dirname, filename),
-      'utf-8',
-    );
-
-    console.log(result); // 👉️ "hello world hello world ..."
-
-    return result;
-  } catch (err) {
-    console.log(err);
-    return 'Something went wrong'
-  }
-}
+import * as github from "@actions/github"
 
 (
   async () => {
     // get file from repo in the same workflow on github actions
     // const octokit = github.getOctokit(core.getInput('token'));
-    // const { data } = await octokit.rest.repos.getContent({
-    //   owner: github.context.repo.owner,
-    //   repo: github.context.repo.repo,
-    //   path: core.getInput('path'),
-    // });
+ 
     try {
-      const openApiFile = core.getInput("open_api_file");
-      console.log("openApiFile", openApiFile);
-      core.notice(openApiFile);
-      const openApiFileContent = await asyncReadFile(openApiFile);
-      console.log("openApiFileContent", openApiFileContent);
-      core.notice(openApiFileContent);
+      const openApiPath = core.getInput("open_api_file");
+      const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
+      const { data } = await github.getOctokit(GITHUB_TOKEN).rest.repos.getContent({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        path: openApiPath
+      });
+
+      console.log(data);
+      core.notice(data.toString());
+      
       core.notice("Calling our action");
     } catch (error) {
       console.error(error);
