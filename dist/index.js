@@ -38,13 +38,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
+const constants_1 = __importDefault(__nccwpck_require__(434));
 // import GithubService from "./services/GithubService";
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         core.notice("Hello World!");
-        const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
+        const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
         core.notice(`OpenAPI file path: ${openApiPath}`);
         // const fileContent = await GithubService.content(openApiPath);
         // const openApiFile = path.join(__dirname, 'openapi.yaml');
@@ -61,6 +65,21 @@ const core = __importStar(__nccwpck_require__(186));
         core.error(JSON.stringify(error));
     }
 }))();
+
+
+/***/ }),
+
+/***/ 434:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class Constants {
+}
+exports["default"] = Constants;
+Constants.GITHUB_TOKEN = "GITHUB_TOKEN";
+Constants.OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
 
 
 /***/ }),
