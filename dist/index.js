@@ -83,7 +83,8 @@ function readDir() {
         fs.writeFileSync(openApiFile, fileContent);
         core.notice(`OpenAPI file saved to: ${openApiFile}`);
         readDir();
-        exec(`npx @openapitools/openapi-generator-cli generate -i api.yaml -g kotlin-spring -o kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api`, (error, stdout, stderr) => {
+        exec(`npx @openapitools/openapi-generator-cli; npx @openapitools/openapi-generator-cli generate -i api.yaml -g kotlin-spring -o kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api`, (error, stdout, stderr) => {
+            readDir();
             if (error) {
                 console.log(`error: ${error.message}`);
                 return;
@@ -92,7 +93,6 @@ function readDir() {
                 console.log(`stderr: ${stderr}`);
                 return;
             }
-            readDir();
             console.log(`stdout: ${stdout}`);
         });
     }
