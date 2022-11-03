@@ -10,7 +10,7 @@ import core from '@actions/core';
     //   repo: github.context.repo.repo,
     //   path: core.getInput('path'),
     // });
-    console.log(process.env.INPUT_OPENAPI);
+    console.log(core.getInput('openapi'));
       
     core.notice("Calling our action");
   }
