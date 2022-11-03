@@ -43,14 +43,13 @@ function readDir() {
     fs.writeFileSync(openApiFile, fileContent);
     core.notice(`OpenAPI file saved to: ${openApiFile}`);
     exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client.api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api`, (_error: any, _stdout: any, _stderr: any) => {
-      readDir();
-        // exec(`cd ${__dirname}; ls; sudo apt-get install rpl; sh run.sh; cd kotlin; mvn clean install`, (error, stdout, stderr) => {
-        //     console.log(`stdout: ${stdout}`);
-        //     console.log(`stderr: ${stderr}`);
-        //     if (error !== null) {
-        //         console.log(`exec error: ${error}`);
-        //     }
-        // });
+      exec(`sudo apt-get install rpl; rpl "</project>" "$(cat distributionManagement.txt)</project>" kotlin/pom.xml; rpl "</properties>" "<spring-boot.repackage.skip>true</spring-boot.repackage.skip></properties>" kotlin/pom.xml;`, (error: any, stdout: any, stderr: any) => {
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+        if (error !== null) {
+            console.log(`exec error: ${error}`);
+        }
+      })
     });
   } catch (error) {
 
