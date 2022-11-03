@@ -1,0 +1,17 @@
+README.md
+build.gradle.kts
+pom.xml
+settings.gradle
+src/main/kotlin/de/scanq/Application.kt
+src/main/kotlin/de/scanq/HomeController.kt
+src/main/kotlin/de/scanq/SpringDocConfiguration.kt
+src/main/kotlin/de/scanq/client-api/ApiUtil.kt
+src/main/kotlin/de/scanq/client-api/CodeApi.kt
+src/main/kotlin/de/scanq/client-api/CodeApiController.kt
+src/main/kotlin/de/scanq/client-api/CodeApiDelegate.kt
+src/main/kotlin/de/scanq/client-api/Exceptions.kt
+src/main/kotlin/de/scanq/models/QRCodeBaseData.kt
+src/main/kotlin/de/scanq/models/QRCodeCreateData.kt
+src/main/kotlin/de/scanq/models/QRCodeStyleData.kt
+src/main/resources/application.yaml
+src/main/resources/openapi.yaml
