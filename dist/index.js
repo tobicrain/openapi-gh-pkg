@@ -38,38 +38,107 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const github = __importStar(__nccwpck_require__(5438));
-function getGithubFileContent(filePath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
-        const { data } = yield github.getOctokit(GITHUB_TOKEN).rest.repos.getContent({
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            path: filePath
-        });
-        const contentString = data === null || data === void 0 ? void 0 : data.content;
-        if (contentString) {
-            return Buffer.from(contentString, "base64").toString();
-        }
-        else {
-            throw new Error(`Could not find file at ${filePath}`);
-        }
-    });
-}
+const GithubService_1 = __importDefault(__nccwpck_require__(3035));
+const fs = __nccwpck_require__(7147);
+const path = __nccwpck_require__(1017);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const openApiPath = core.getInput("OPEN_API_FILE_PATH");
-        const fileContent = yield getGithubFileContent(openApiPath);
-        core.notice(fileContent);
-        core.notice("Calling our action");
+        const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
+        const fileContent = yield GithubService_1.default.content(openApiPath);
+        // write file to current folder
+        fs.writeFileSync("openapi.yml", fileContent);
+        const file = fs.createReadStream(path.join(__dirname, 'openapi.yml'));
+        // save filecontent in a variable
+        let fileContent2 = '';
+        file.on('data', (chunk) => {
+            fileContent2 += chunk;
+        });
+        file.on('end', () => {
+            // parse filecontent
+            fs.writeFileSync("openapi2.yml", fileContent2);
+            console.log(fileContent2);
+        });
+        core.notice(fileContent2);
     }
     catch (error) {
         core.error(JSON.stringify(error));
     }
 }))();
-// npx @openapitools/openapi-generator-cli generate -i api.yaml -g kotlin-spring -o kotlin --git-user-id "tandamo" --git-repo-id "scanq-client-api" --additional-properties=delegatePattern=true,apiPackage=de.scanq.client-api,artifactId=scanq-client-api,basePackage=de.scanq,artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api
+
+
+/***/ }),
+
+/***/ 3035:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const github = __importStar(__nccwpck_require__(5438));
+const core = __importStar(__nccwpck_require__(2186));
+class GithubService {
+    static content(path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const file = yield this.file(path);
+            const contentString = file === null || file === void 0 ? void 0 : file.content;
+            if (contentString) {
+                return Buffer.from(contentString, "base64").toString();
+            }
+            else {
+                throw new Error(`Could not find file at ${path}`);
+            }
+        });
+    }
+    static file(path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const GITHUB_TOKEN = core.getInput(Constants.GITHUB_TOKEN);
+            const { data } = yield github.getOctokit(GITHUB_TOKEN).rest.repos.getContent({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                path: path
+            });
+            return data;
+        });
+    }
+}
+exports["default"] = GithubService;
 
 
 /***/ }),
