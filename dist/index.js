@@ -50,8 +50,14 @@ const github = __importStar(__nccwpck_require__(5438));
             repo: github.context.repo.repo,
             path: openApiPath
         });
-        console.log(data);
-        core.notice(data.toString());
+        const contentString = data === null || data === void 0 ? void 0 : data.content;
+        if (contentString) {
+            const openApiContent = Buffer.from(contentString, "base64").toString();
+            core.notice(openApiContent);
+        }
+        else {
+            core.setFailed("No content found");
+        }
         core.notice("Calling our action");
     }
     catch (error) {
