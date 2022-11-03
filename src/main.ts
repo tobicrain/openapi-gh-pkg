@@ -11,10 +11,13 @@ import * as github from "@actions/github"
         repo: github.context.repo.repo,
         path: openApiPath
       });
-
-      console.log(data);
-      core.notice(data.toString());
-      
+      const contentString = (data as any)?.content as string | null;
+      if (contentString) {
+        const openApiContent = Buffer.from(contentString, "base64").toString();
+        core.notice(openApiContent);
+      } else {
+        core.setFailed("No content found");
+      }
       core.notice("Calling our action");
     } catch (error) {
       core.error(JSON.stringify(error));

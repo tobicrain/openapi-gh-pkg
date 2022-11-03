@@ -4,7 +4,7 @@ inputs:
   OPEN_API_FILE_PATH:
     description: "Path to openapi file"
     required: true
-    default: "./api.yml"
+    default: "api.yml"
   GITHUB_TOKEN:
     description: "Your Github Secret"
     required: true
