@@ -7,8 +7,8 @@ import Constants from "./util/constants";
 const { exec } = require('child_process');
 const yaml = require('js-yaml');
 
-const repoName: string = github.context.repo.repo as string;
-const owner: string = github.context.repo.owner as string;
+const repoName: string = github.context.repo.repo + "" as string;
+const owner: string = github.context.repo.owner + "" as string;
 
 const distributionManagement = `
     <distributionManagement>
@@ -69,8 +69,8 @@ function readDir() {
     fs.writeFileSync(openApiFile, fileContent);
     core.notice(`OpenAPI file saved to: ${openApiFile}`);
     
-    console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-").at(0)},title=${repoName}`)
-    const { stdout, stderr } = await exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-").at(0)},title=${repoName}`);
+    console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-")[0]},title=${repoName}`)
+    const { stdout, stderr } = await exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-")[0]},title=${repoName}`);
     console.log('stdout:', stdout);
     console.log('stderr:', stderr);
     // exec(, (_error: any, _stdout: any, _stderr: any) => {

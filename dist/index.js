@@ -50,8 +50,8 @@ const GithubService_1 = __importDefault(__nccwpck_require__(3035));
 const constants_1 = __importDefault(__nccwpck_require__(4434));
 const { exec } = __nccwpck_require__(2081);
 const yaml = __nccwpck_require__(1917);
-const repoName = github.context.repo.repo;
-const owner = github.context.repo.owner;
+const repoName = github.context.repo.repo + "";
+const owner = github.context.repo.owner + "";
 const distributionManagement = `
     <distributionManagement>
         <repository>
@@ -105,8 +105,8 @@ function readDir() {
         const openApiFile = path.join(__dirname, 'openapi.yaml');
         fs.writeFileSync(openApiFile, fileContent);
         core.notice(`OpenAPI file saved to: ${openApiFile}`);
-        console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-").at(0)},title=${repoName}`);
-        const { stdout, stderr } = yield exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-").at(0)},title=${repoName}`);
+        console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-")[0]},title=${repoName}`);
+        const { stdout, stderr } = yield exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-")[0]},title=${repoName}`);
         console.log('stdout:', stdout);
         console.log('stderr:', stderr);
         // exec(, (_error: any, _stdout: any, _stderr: any) => {
