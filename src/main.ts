@@ -70,8 +70,8 @@ function readDir() {
     const dottedArtifactId = repoName.replace(/-/g, '.');
     const firstArtifactId = dottedArtifactId.split('.')[0];
 
-    console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`)
-    const { stdout, stderr } = await exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
+    console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`)
+    const { stdout, stderr } = await exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
     readDir();
     const data = await fs.promises.readFile(__dirname + '/kotlin/pom.xml', 'utf8')
     console.log(data)
