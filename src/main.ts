@@ -69,8 +69,10 @@ function readDir() {
     fs.writeFileSync(openApiFile, fileContent);
     core.notice(`OpenAPI file saved to: ${openApiFile}`);
     
-    console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-")[0]},title=${repoName}`)
-    const { stdout, stderr } = await exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-")[0]},title=${repoName}`);
+    const dottedArtifactId = repoName.replace(/-/g, '.');
+
+    console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${dottedArtifactId},artifactVersion=${version},packageName=de.${repoName.split("-")[0]},title=${repoName}`)
+    const { stdout, stderr } = await exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${dottedArtifactId},artifactVersion=${version},packageName=de.${repoName.split("-")[0]},title=${repoName}`);
     console.log('stdout:', stdout);
     console.log('stderr:', stderr);
     // exec(, (_error: any, _stdout: any, _stderr: any) => {
