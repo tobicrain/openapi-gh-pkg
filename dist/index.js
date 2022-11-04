@@ -44,6 +44,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
+const path = __importStar(__nccwpck_require__(1017));
+const fs = __importStar(__nccwpck_require__(7147));
 const GithubService_1 = __importDefault(__nccwpck_require__(3035));
 const constants_1 = __importDefault(__nccwpck_require__(4434));
 const { exec } = __nccwpck_require__(2081);
@@ -100,10 +102,14 @@ function readDir() {
         const version = doc.info.version;
         console.log(version);
         core.notice(version);
-        // const openApiFile = path.join(__dirname, 'openapi.yaml');
-        // fs.writeFileSync(openApiFile, fileContent);
-        // core.notice(`OpenAPI file saved to: ${openApiFile}`);
-        // exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "tandamo" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=0.1.15,packageName=de.scanq,title=scanq-client-api`, (_error: any, _stdout: any, _stderr: any) => {
+        const openApiFile = path.join(__dirname, 'openapi.yaml');
+        fs.writeFileSync(openApiFile, fileContent);
+        core.notice(`OpenAPI file saved to: ${openApiFile}`);
+        console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-").at(0)},title=${repoName}`);
+        const { stdout, stderr } = yield exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${repoName.replace("-", ".")},artifactId=${repoName},basePackage=de.${repoName.replace("-", ".")},artifactVersion=${version},packageName=de.${repoName.split("-").at(0)},title=${repoName}`);
+        console.log('stdout:', stdout);
+        console.log('stderr:', stderr);
+        // exec(, (_error: any, _stdout: any, _stderr: any) => {
         //   fs.readFile(__dirname + '/kotlin/pom.xml', 'utf8', function (err, data) {
         //     if (err) {
         //       return console.log(err);
