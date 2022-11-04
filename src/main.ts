@@ -7,8 +7,8 @@ import Constants from "./util/constants";
 const { exec } = require('child_process');
 const yaml = require('js-yaml');
 
-const repoName = github.context.repo.repo;
-const owner = github.context.repo.owner;
+const repoName: string = github.context.repo.repo as string;
+const owner: string = github.context.repo.owner as string;
 
 const distributionManagement = `
     <distributionManagement>
