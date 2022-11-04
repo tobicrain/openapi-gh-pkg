@@ -44,9 +44,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-const path = __importStar(__nccwpck_require__(1017));
 const fs = __importStar(__nccwpck_require__(7147));
-const GithubService_1 = __importDefault(__nccwpck_require__(3035));
 const constants_1 = __importDefault(__nccwpck_require__(4434));
 const { exec } = __nccwpck_require__(2081);
 const yaml = __nccwpck_require__(1917);
@@ -95,131 +93,59 @@ function readDir() {
         core.notice("github.context.repo" + repoName);
         const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
         core.notice(`OpenAPI file path: ${openApiPath}`);
-        const fileContent = yield GithubService_1.default.content(openApiPath);
-        core.notice(`File content: ${fileContent}`);
+        const fileContent = yield fs.promises.readFile(openApiPath, 'utf8');
+        console.log(fileContent);
+        // // const fileContent = await GithubService.content(openApiPath);
+        core.notice(`OpenAPI file content: ${fileContent}`);
         const doc = yaml.load(fileContent);
         const version = doc.info.version;
         core.notice(version);
-        const openApiFile = path.join(__dirname, 'openapi.yaml');
-        fs.writeFileSync(openApiFile, fileContent);
-        core.notice(`OpenAPI file saved to: ${openApiFile}`);
-        const dottedArtifactId = repoName.replace(/-/g, '.');
-        const firstArtifactId = dottedArtifactId.split('.')[0];
-        console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
-        const { stdout, stderr } = yield exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
-        readDir();
-        const data = yield fs.promises.readFile(__dirname + '/kotlin/pom.xml', 'utf8');
-        console.log(data);
-        // exec(, (_error: any, _stdout: any, _stderr: any) => {
-        //   fs.readFile(__dirname + '/kotlin/pom.xml', 'utf8', function (err, data) {
-        //     if (err) {
-        //       return console.log(err);
-        //     }
-        //     const newData = data
-        //       .replace("</project>", distributionManagement)
-        //       .replace("</properties>", properties)
-        //     console.log(newData);
-        //     fs.writeFile(__dirname + '/kotlin/pom.xml', newData, 'utf8', function (err) {
-        //       if (err) return console.log(err);
-        //       console.log('pom.xml updated');
-        //       const GITHUB_USERNAME = core.getInput(Constants.GITHUB_USERNAME);
-        //       const GITHUB_TOKEN = core.getInput(Constants.GITHUB_TOKEN);
-        //       fs.writeFile(__dirname + '/settings.xml', `<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_TOKEN}</password></server></servers></settings>`, 'utf8', function (err) {
-        //         if (err) return console.log(err);
-        //         console.log('settings.xml updated');
-        //         readDir();
-        //         exec(`cd ${__dirname}/kotlin; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`, (error3: any, stdout3: any, stderr3: any) => {
-        //           console.log(`stdout3: ${stdout3}`);
-        //           console.log(`stderr3: ${stderr3}`);
-        //           if (error3) {
-        //             console.log(`error3: ${error3.message}`);
-        //             return;
-        //           }
-        //         });
-        //       });
-        //     });
-        //   });
-        // });
+        // const openApiFile = path.join(__dirname, 'openapi.yaml');
+        // fs.writeFileSync(openApiFile, fileContent);
+        // core.notice(`OpenAPI file saved to: ${openApiFile}`);
+        // const dottedArtifactId = repoName.replace(/-/g, '.');
+        // const firstArtifactId = dottedArtifactId.split('.')[0];
+        // console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`)
+        // const { stdout, stderr } = await exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
+        // readDir();
+        // const data = await fs.promises.readFile(__dirname + '/kotlin/pom.xml', 'utf8')
+        // console.log(data)
+        // // exec(, (_error: any, _stdout: any, _stderr: any) => {
+        // //   fs.readFile(__dirname + '/kotlin/pom.xml', 'utf8', function (err, data) {
+        // //     if (err) {
+        // //       return console.log(err);
+        // //     }
+        // //     const newData = data
+        // //       .replace("</project>", distributionManagement)
+        // //       .replace("</properties>", properties)
+        // //     console.log(newData);
+        // //     fs.writeFile(__dirname + '/kotlin/pom.xml', newData, 'utf8', function (err) {
+        // //       if (err) return console.log(err);
+        // //       console.log('pom.xml updated');
+        // //       const GITHUB_USERNAME = core.getInput(Constants.GITHUB_USERNAME);
+        // //       const GITHUB_TOKEN = core.getInput(Constants.GITHUB_TOKEN);
+        // //       fs.writeFile(__dirname + '/settings.xml', `<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_TOKEN}</password></server></servers></settings>`, 'utf8', function (err) {
+        // //         if (err) return console.log(err);
+        // //         console.log('settings.xml updated');
+        // //         readDir();
+        // //         exec(`cd ${__dirname}/kotlin; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`, (error3: any, stdout3: any, stderr3: any) => {
+        // //           console.log(`stdout3: ${stdout3}`);
+        // //           console.log(`stderr3: ${stderr3}`);
+        // //           if (error3) {
+        // //             console.log(`error3: ${error3.message}`);
+        // //             return;
+        // //           }
+        // //         });
+        // //       });
+        // //     });
+        // //   });
+        // // });
     }
     catch (error) {
         console.error(error);
         core.error(JSON.stringify(error));
     }
 }))();
-
-
-/***/ }),
-
-/***/ 3035:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const github = __importStar(__nccwpck_require__(5438));
-const core = __importStar(__nccwpck_require__(2186));
-const constants_1 = __importDefault(__nccwpck_require__(4434));
-class GithubService {
-    static content(path) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const file = yield this.file(path);
-            const contentString = file === null || file === void 0 ? void 0 : file.content;
-            if (contentString) {
-                return Buffer.from(contentString, "base64").toString();
-            }
-            else {
-                throw new Error(`Could not find file at ${path}`);
-            }
-        });
-    }
-    static file(path) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const GITHUB_TOKEN = core.getInput(constants_1.default.GITHUB_TOKEN);
-            const { data } = yield github.getOctokit(GITHUB_TOKEN).rest.repos.getContent({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                path: path
-            });
-            return data;
-        });
-    }
-}
-exports["default"] = GithubService;
 
 
 /***/ }),
