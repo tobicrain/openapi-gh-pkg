@@ -5,7 +5,7 @@ import * as fs from "fs";
 import GithubService from "./services/GithubService";
 import Constants from "./util/constants";
 const { exec } = require('child_process');
-// import YAML from 'yaml'
+const yaml = require('js-yaml');
 
 const repoName = github.context.repo.repo;
 const owner = github.context.repo.owner;
@@ -59,6 +59,12 @@ function readDir() {
     
     const fileContent = await GithubService.content(openApiPath);
     core.notice(`File content: ${fileContent}`);
+    try {
+      const doc = yaml.load(fileContent);
+      console.log(doc);
+    } catch (e) {
+      console.log(e);
+    }
     // decode yml file content
     // const parsedFileContent = YAML.parse(fileContent)
     // const version = parsedFileContent.info.version;
