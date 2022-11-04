@@ -57,27 +57,21 @@ function readDir() {
     core.notice(`OpenAPI file path: ${openApiPath}`);
     
     const fileContent = await fs.promises.readFile(openApiPath, 'utf8')
-    console.log(fileContent);
-
-    // // const fileContent = await GithubService.content(openApiPath);
     core.notice(`OpenAPI file content: ${fileContent}`);
+
     const doc = yaml.load(fileContent);
     
     const version = doc.info.version;
-    core.notice(version)
+    core.notice(`OpenAPI version: ${version}`);
     
-    // const openApiFile = path.join(__dirname, 'openapi.yaml');
-    // fs.writeFileSync(openApiFile, fileContent);
-    // core.notice(`OpenAPI file saved to: ${openApiFile}`);
-    
-    // const dottedArtifactId = repoName.replace(/-/g, '.');
-    // const firstArtifactId = dottedArtifactId.split('.')[0];
+    const dottedArtifactId = repoName.replace(/-/g, '.');
+    const firstArtifactId = dottedArtifactId.split('.')[0];
 
-    // console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`)
-    // const { stdout, stderr } = await exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
-    // readDir();
-    // const data = await fs.promises.readFile(__dirname + '/kotlin/pom.xml', 'utf8')
-    // console.log(data)
+    console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`)
+    const { stdout, stderr } = await exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
+    readDir();
+    const data = await fs.promises.readFile('/kotlin/pom.xml', 'utf8')
+    console.log(data)
     // // exec(, (_error: any, _stdout: any, _stderr: any) => {
     // //   fs.readFile(__dirname + '/kotlin/pom.xml', 'utf8', function (err, data) {
     // //     if (err) {
