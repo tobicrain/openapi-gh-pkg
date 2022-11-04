@@ -59,17 +59,11 @@ function readDir() {
     
     const fileContent = await GithubService.content(openApiPath);
     core.notice(`File content: ${fileContent}`);
-    try {
-      const doc = yaml.load(fileContent);
-      console.log(doc);
-    } catch (e) {
-      console.log(e);
-    }
-    // decode yml file content
-    // const parsedFileContent = YAML.parse(fileContent)
-    // const version = parsedFileContent.info.version;
-    // console.log(version)
-    // core.notice(version)
+    const doc = yaml.load(fileContent);
+    
+    const version = doc.info.version;
+    console.log(version)
+    core.notice(version)
     
     // const openApiFile = path.join(__dirname, 'openapi.yaml');
     // fs.writeFileSync(openApiFile, fileContent);
