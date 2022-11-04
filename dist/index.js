@@ -95,6 +95,7 @@ function readDir() {
         const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
         core.notice(`OpenAPI file path: ${openApiPath}`);
         const fileContent = yield GithubService_1.default.content(openApiPath);
+        core.notice(`File content: ${fileContent}`);
         // decode yml file content
         const parsedFileContent = yaml_1.default.parse(fileContent);
         const version = parsedFileContent.info.version;
