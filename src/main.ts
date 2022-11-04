@@ -7,8 +7,8 @@ import Constants from "./util/constants";
 const { exec } = require('child_process');
 const yaml = require('js-yaml');
 
-const repoName: string = github.context.repo.repo + "" as string;
-const owner: string = github.context.repo.owner + "" as string;
+const repoName = github.context.repo.repo as string;
+const owner = github.context.repo.owner as string;
 
 const distributionManagement = `
     <distributionManagement>
@@ -51,8 +51,7 @@ function readDir() {
 
 (async () => {
   try {
-    core.notice("github.context.repo"+ github.context.repo);
-    core.notice("Hello World!");
+    core.notice("github.context.repo"+ repoName);
     
     const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
     core.notice(`OpenAPI file path: ${openApiPath}`);
@@ -62,7 +61,6 @@ function readDir() {
     const doc = yaml.load(fileContent);
     
     const version = doc.info.version;
-    console.log(version)
     core.notice(version)
     
     const openApiFile = path.join(__dirname, 'openapi.yaml');
@@ -72,7 +70,6 @@ function readDir() {
     const dottedArtifactId = repoName.replace(/-/g, '.');
     const firstArtifactId = dottedArtifactId.split('.')[0];
 
-    console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`)
     const { stdout, stderr } = await exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiFile} -g kotlin-spring -o ${__dirname}/kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
     console.log('stdout:', stdout);
     console.log('stderr:', stderr);
