@@ -141,6 +141,7 @@ function readDir() {
         // });
     }
     catch (error) {
+        console.error(error);
         core.error(JSON.stringify(error));
     }
 }))();
