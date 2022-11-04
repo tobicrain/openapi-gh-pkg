@@ -5,7 +5,7 @@ import * as fs from "fs";
 import GithubService from "./services/GithubService";
 import Constants from "./util/constants";
 const { exec } = require('child_process');
-import YAML from 'yaml'
+// import YAML from 'yaml'
 
 const repoName = github.context.repo.repo;
 const owner = github.context.repo.owner;
@@ -60,10 +60,10 @@ function readDir() {
     const fileContent = await GithubService.content(openApiPath);
     core.notice(`File content: ${fileContent}`);
     // decode yml file content
-    const parsedFileContent = YAML.parse(fileContent)
-    const version = parsedFileContent.info.version;
-    console.log(version)
-    core.notice(version)
+    // const parsedFileContent = YAML.parse(fileContent)
+    // const version = parsedFileContent.info.version;
+    // console.log(version)
+    // core.notice(version)
     
     // const openApiFile = path.join(__dirname, 'openapi.yaml');
     // fs.writeFileSync(openApiFile, fileContent);
