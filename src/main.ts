@@ -57,7 +57,6 @@ function readDir() {
     core.notice(`OpenAPI file path: ${openApiPath}`);
     
     const fileContent = await fs.promises.readFile(openApiPath, 'utf8')
-    core.notice(`OpenAPI file content: ${fileContent}`);
 
     const doc = yaml.load(fileContent);
     
