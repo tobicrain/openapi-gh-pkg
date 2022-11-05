@@ -41,12 +41,21 @@ export default class DeployService {
     await execute(`cd ${outputPath}; npm run build`);
     core.notice(`npm run build`);
 
-    await execute(`
-    cd ${outputPath}/dist;
-    npm config set registry https://npm.pkg.github.com;
-    npm set //npm.pkg.github.com/:_authToken ${githubToken};
-    npm publish;
+    const test = await execute(`cd ${outputPath}/dist; ls;`)
+    core.notice(`ls dist: ${test}`);
+    const test2 = await execute(`cd ${outputPath}; ls;`)
+    core.notice(`ls: ${test2}`);
+    const test3 = await execute(`cd; ls;`)
+    core.notice(`ls: ${test3}`);
+    const test4 = await execute(`ls;`)
+    core.notice(`ls: ${test4}`);
+    const test5 = await execute(`
+      cd ${outputPath}/dist;
+      npm config set registry https://npm.pkg.github.com;
+      npm set //npm.pkg.github.com/:_authToken ${githubToken};
+      npm publish --access public;
     `)
+    core.notice(`npm publish: ${test5}`);
   }
 
   static async handleKotlinClient() {

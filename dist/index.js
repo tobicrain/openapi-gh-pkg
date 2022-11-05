@@ -141,12 +141,21 @@ class DeployService {
             core.notice(`npm Install`);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; npm run build`);
             core.notice(`npm run build`);
-            yield (0, syncToAsync_1.execute)(`
-    cd ${outputPath}/dist;
-    npm config set registry https://npm.pkg.github.com;
-    npm set //npm.pkg.github.com/:_authToken ${githubToken};
-    npm publish;
+            const test = yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; ls;`);
+            core.notice(`ls dist: ${test}`);
+            const test2 = yield (0, syncToAsync_1.execute)(`cd ${outputPath}; ls;`);
+            core.notice(`ls: ${test2}`);
+            const test3 = yield (0, syncToAsync_1.execute)(`cd; ls;`);
+            core.notice(`ls: ${test3}`);
+            const test4 = yield (0, syncToAsync_1.execute)(`ls;`);
+            core.notice(`ls: ${test4}`);
+            const test5 = yield (0, syncToAsync_1.execute)(`
+      cd ${outputPath}/dist;
+      npm config set registry https://npm.pkg.github.com;
+      npm set //npm.pkg.github.com/:_authToken ${githubToken};
+      npm publish --access public;
     `);
+            core.notice(`npm publish: ${test5}`);
         });
     }
     static handleKotlinClient() {
