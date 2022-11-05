@@ -18,8 +18,8 @@ publishing {
           name = "GitHubPackages"
           url = "https://maven.pkg.github.com/${owner}/${repoName}"
           credentials {
-            username = "${owner}"
-            password = "${githubToken}"
+            username = System.getenv("GITHUB_REPOSITORY_OWNER")
+            password = System.getenv("${this.GITHUB_TOKEN}")
           }
       }
     }
