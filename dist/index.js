@@ -161,6 +161,7 @@ class DeployService {
             console.log(gradleFile);
             const newGradleFile = gradleFile.replace("apply plugin: 'kotlin'", constants_1.default.GRADLE_DISTRIBUTION(ownerName, repoName, githubToken));
             core.notice(`Modified project and properties in build.gradle`);
+            console.log(newGradleFile);
             yield fs.promises.writeFile(`${outputPath}/build.gradle`, newGradleFile, "utf8");
             core.notice(`Updated build.gradle`);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; gradle publish`);

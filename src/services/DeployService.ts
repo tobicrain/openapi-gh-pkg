@@ -84,6 +84,7 @@ export default class DeployService {
       )
     );
     core.notice(`Modified project and properties in build.gradle`);
+    console.log(newGradleFile)
 
     await fs.promises.writeFile(
       `${outputPath}/build.gradle`,
