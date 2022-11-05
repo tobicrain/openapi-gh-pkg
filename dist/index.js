@@ -117,6 +117,7 @@ const js_yaml_1 = __importDefault(__nccwpck_require__(1917));
 const syncToAsync_1 = __nccwpck_require__(4751);
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
+const child_process_1 = __nccwpck_require__(2081);
 const ownerName = github.context.repo.owner;
 const githubToken = core.getInput(constants_1.default.GITHUB_TOKEN);
 const npmToken = core.getInput(constants_1.default.NPM_TOKEN);
@@ -190,7 +191,18 @@ class DeployService {
     `);
             core.notice(`Created settings.xml`);
             console.log(constants_1.default.SETTINGS_XML(ownerName, githubToken));
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`);
+            const zaudg = yield (0, syncToAsync_1.execute)(`cd ${outputPath}; ls;`);
+            console.log(zaudg);
+            (0, child_process_1.exec)(`cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`, (error, stdout, stderr) => {
+                console.log(stdout);
+                console.log(stderr);
+                if (error !== null) {
+                    console.log(`exec error: ${error}`);
+                }
+            });
+            // await execute(
+            //   `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`
+            // );
             core.notice(`Deployed to GitHub Packages`);
         });
     }
