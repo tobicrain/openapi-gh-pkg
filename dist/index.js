@@ -159,11 +159,7 @@ class DeployService {
             core.notice(`Generated Kotlin Client code`);
             const gradleFile = yield fs.promises.readFile(`${outputPath}/build.gradle`, "utf8");
             console.log(gradleFile);
-            const newGradleFile = gradleFile.replace(`
-
-
-
-repositories {`, constants_1.default.GRADLE_PLUGINS()).replace("apply plugin: 'kotlin'", "").replace("wrapper {", constants_1.default.GRADLE_PUBLISHING(ownerName, repoName, githubToken));
+            const newGradleFile = gradleFile.replace("apply plugin: 'kotlin'", constants_1.default.GRADLE_PLUGINS(ownerName, repoName, githubToken));
             core.notice(`Modified project and properties in build.gradle`);
             console.log(newGradleFile);
             yield fs.promises.writeFile(`${outputPath}/build.gradle`, newGradleFile, "utf8");
@@ -220,14 +216,12 @@ Constants.GITHUB_TOKEN = "GITHUB_TOKEN";
 Constants.OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
 Constants.OUTPUT_PATH = "OUTPUT_PATH";
 Constants.NPM_TOKEN = "NPM_TOKEN";
-Constants.GRADLE_PLUGINS = () => `
+Constants.GRADLE_PLUGINS = (owner, repoName, githubToken) => `
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.7.20'
     id 'maven-publish'
 }
 
-repositories {`;
-Constants.GRADLE_PUBLISHING = (owner, repoName, githubToken) => `
 publishing {
     repositories {
       maven {
@@ -245,7 +239,7 @@ publishing {
         }
     } 
 }
-wrapper {`;
+`;
 Constants.SETTINGS_XML = (githubUsername, githubToken) => `
   <settings>
     <servers>

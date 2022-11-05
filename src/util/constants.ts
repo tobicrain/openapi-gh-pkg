@@ -5,18 +5,15 @@ export default class Constants {
   static readonly OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
   static readonly OUTPUT_PATH = "OUTPUT_PATH";
   static readonly NPM_TOKEN = "NPM_TOKEN";
-  static readonly GRADLE_PLUGINS = () => `
+  static readonly GRADLE_PLUGINS = (
+    owner: string,
+    repoName: string,
+    githubToken: string) => `
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.7.20'
     id 'maven-publish'
 }
 
-repositories {`;
-  static readonly GRADLE_PUBLISHING = (
-    owner: string,
-    repoName: string,
-    githubToken: string
-  ) => `
 publishing {
     repositories {
       maven {
@@ -34,9 +31,9 @@ publishing {
         }
     } 
 }
-wrapper {`;
+`;
 
-  static readonly SETTINGS_XML = (
+static readonly SETTINGS_XML = (
     githubUsername: string,
     githubToken: string
   ) => `
