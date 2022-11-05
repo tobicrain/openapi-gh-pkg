@@ -122,7 +122,7 @@ export default class DeployService {
     core.notice(`Updated pom.xml`);
 
     const test = await execute(`
-      touch ~/.m2/settings.xml,
+      touch ~/.m2/settings.xml;
       echo '<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>' > ~/.m2/settings.xml;
     `)
     console.log(test)
