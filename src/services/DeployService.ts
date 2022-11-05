@@ -58,25 +58,17 @@ export default class DeployService {
 
     core.notice(`Generated Kotlin Client code`);
 
-    const pomFile = await fs.promises.readFile(`${outputPath}/pom.xml`, "utf8");
+    const gradleFile = await fs.promises.readFile(`${outputPath}/build.gradle`, "utf8");
 
-    const newPomFile = pomFile
-      .replace("</project>", Constants.POM_DISTRIBUTION(ownerName, repoName))
-      .replace("</properties>", Constants.POM_PROPERTIES);
-    core.notice(`Modified project and properties in pom.xml`);
+    const newGradleFile = gradleFile
+      .replace("repositories {", Constants.GRADLE_DISTRIBUTION(ownerName, repoName, githubUsername, githubToken))
+    core.notice(`Modified project and properties in build.gradle`);
 
-    await fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
-    core.notice(`Updated pom.xml`);
-
-    await fs.promises.writeFile(
-      __dirname + "/settings.xml",
-      `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`,
-      "utf8"
-    );
-    core.notice(`Created settings.xml`);
+    await fs.promises.writeFile(`${outputPath}/build.gradle`, newGradleFile, "utf8");
+    core.notice(`Updated build.gradle`);
 
     await execute(
-      `cd ${outputPath}; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`
+      `cd ${outputPath}; gradle publish`
     );
     core.notice(`Deployed to GitHub Packages`);
   }
