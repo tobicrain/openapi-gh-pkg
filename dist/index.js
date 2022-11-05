@@ -144,9 +144,10 @@ class DeployService {
 always-auth=true
 `, "utf8");
             core.notice(`Created .npmrc`);
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npx npm-cli-login -u ${githubUsername} -p ${githubToken} -e admin@tandamo.de -r https://npm.pkg.github.com`);
+            const awda = yield fs.promises.readFile(`${outputPath}/dist/.npmrc`, "utf8");
+            console.log(awda);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm publish`);
-            //     core.notice(`npm publish`);
+            core.notice(`npm publish`);
         });
     }
     static handleKotlinSpring() {
