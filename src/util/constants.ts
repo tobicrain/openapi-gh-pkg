@@ -21,6 +21,20 @@ export default class Constants {
         }
     }
   `;
+  static readonly SETTINGS_XML = (
+    githubUsername: string,
+    githubToken: string
+  ) => `
+  <settings>
+    <servers>
+      <server>
+        <id>github</id>
+        <username>${githubUsername}</username>
+        <password>${githubToken}</password>
+      </server>
+    </servers>
+  </settings>
+  `
   static readonly POM_DISTRIBUTION = (owner: string, repoName: string) => `
         <distributionManagement>
             <repository>

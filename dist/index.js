@@ -184,13 +184,13 @@ class DeployService {
             core.notice(`Modified project and properties in pom.xml`);
             yield fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
             core.notice(`Updated pom.xml`);
-            const test = yield (0, syncToAsync_1.execute)(`
-      mkdir ~/.m2;
-      touch ~/.m2/settings.xml;
-      echo '<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>' > ~/.m2/settings.xml;
-    `);
-            console.log(test);
-            core.notice(`Created settings.xml`);
+            yield fs.promises.writeFile(`~/.m2/settings.xml`, constants_1.default.SETTINGS_XML(githubUsername, githubToken), "utf8");
+            core.notice(`Updated settings.xml`);
+            // const test = await execute(`
+            //   mkdir ~/.m2;
+            //   touch ~/.m2/settings.xml;
+            //   echo '<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>' > ~/.m2/settings.xml;
+            // `)
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`);
             core.notice(`Deployed to GitHub Packages`);
         });
@@ -226,6 +226,17 @@ Constants.GRADLE_DISTRIBUTION = (owner, repoName, githubUsername, githubToken) =
         password = System.getenv(${githubToken})
         }
     }
+  `;
+Constants.SETTINGS_XML = (githubUsername, githubToken) => `
+  <settings>
+    <servers>
+      <server>
+        <id>github</id>
+        <username>${githubUsername}</username>
+        <password>${githubToken}</password>
+      </server>
+    </servers>
+  </settings>
   `;
 Constants.POM_DISTRIBUTION = (owner, repoName) => `
         <distributionManagement>
