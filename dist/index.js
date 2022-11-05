@@ -55,6 +55,9 @@ const platform = core.getInput(constants_1.default.PLATFORMS);
             case "typescript-angular":
                 yield DeployService_1.default.handleAngular();
                 break;
+            case "kotlin":
+                yield DeployService_1.default.handleKotlinClient();
+                break;
             default:
                 break;
         }
@@ -148,6 +151,29 @@ class DeployService {
             console.log(awda);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm publish`);
             core.notice(`npm publish`);
+        });
+    }
+    static handleKotlinClient() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const ymlFile = yield fs.promises.readFile(openApiPath, "utf8");
+            const yml = js_yaml_1.default.load(ymlFile);
+            const version = yml.info.version;
+            core.notice("Repository name: " + repoName);
+            core.notice("OpenAPI file path: " + openApiPath);
+            core.notice("OpenAPI version: " + version);
+            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"`);
+            core.notice(`Generated Kotlin Client code`);
+            const pomFile = yield fs.promises.readFile(`${outputPath}/pom.xml`, "utf8");
+            const newPomFile = pomFile
+                .replace("</project>", constants_1.default.POM_DISTRIBUTION(ownerName, repoName))
+                .replace("</properties>", constants_1.default.POM_PROPERTIES);
+            core.notice(`Modified project and properties in pom.xml`);
+            yield fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
+            core.notice(`Updated pom.xml`);
+            yield fs.promises.writeFile(__dirname + "/settings.xml", `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, "utf8");
+            core.notice(`Created settings.xml`);
+            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`);
+            core.notice(`Deployed to GitHub Packages`);
         });
     }
     static handleKotlinSpring() {
