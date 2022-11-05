@@ -2,7 +2,6 @@ export default class Constants {
     static readonly GITHUB_USERNAME = "GITHUB_USERNAME";
     static readonly GITHUB_TOKEN = "GITHUB_TOKEN";
     static readonly OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
-    static readonly OUTPUT_PATH = "OUTPUT_PATH";
     static readonly POM_DISTRIBUTION = (owner: string, repoName: string) => `
         <distributionManagement>
             <repository>

@@ -11,9 +11,6 @@ inputs:
   GITHUB_TOKEN:
     description: "Your Github Secret"
     required: true
-  OUTPUT_PATH:
-    description: "Your output path"
-    required: true
 runs:
   using: node12
   main: 'lib/main.js'
