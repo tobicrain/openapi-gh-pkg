@@ -184,6 +184,8 @@ class DeployService {
             core.notice(`Modified project and properties in pom.xml`);
             yield fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
             core.notice(`Updated pom.xml`);
+            yield (0, syncToAsync_1.execute)("mkdir -p ~/.m2");
+            core.notice(`Created ~/.m2`);
             yield fs.promises.writeFile(`~/.m2/settings.xml`, constants_1.default.SETTINGS_XML(githubUsername, githubToken), "utf8");
             core.notice(`Updated settings.xml`);
             // const test = await execute(`

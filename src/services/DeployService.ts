@@ -121,6 +121,9 @@ export default class DeployService {
     await fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
     core.notice(`Updated pom.xml`);
 
+    await execute("mkdir -p ~/.m2");
+    core.notice(`Created ~/.m2`);
+    
     await fs.promises.writeFile(`~/.m2/settings.xml`, Constants.SETTINGS_XML(githubUsername, githubToken), "utf8");
     core.notice(`Updated settings.xml`);
 
