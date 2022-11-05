@@ -51,11 +51,11 @@ always-auth=true
       "utf8"
     );
     core.notice(`Created .npmrc`);
+    const awda = await fs.promises.readFile(`${outputPath}/dist/.npmrc`, "utf8");
+    console.log(awda);
 
-    await execute(`cd ${outputPath}/dist; npm-cli-login -u ${githubUsername} -p ${githubToken} -e admin@tandamo.de -r https://npm.pkg.github.com`);
-
-    await execute(`cd ${outputPath}/dist; npm-cli-login -u testUser -p testPass -e test@example.com npm publish`);
-//     core.notice(`npm publish`);
+    await execute(`cd ${outputPath}/dist; npm publish`);
+    core.notice(`npm publish`);
   }
 
   static async handleKotlinClient() {
