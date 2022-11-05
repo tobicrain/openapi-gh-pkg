@@ -8,7 +8,6 @@ export default class Constants {
   static readonly GRADLE_DISTRIBUTION = (
     owner: string,
     repoName: string,
-    githubUsername: string,
     githubToken: string
   ) => `
   repositories {
@@ -16,7 +15,7 @@ export default class Constants {
         name = "GitHubPackages"
         url = "https://maven.pkg.github.com/${owner}/${repoName}"
         credentials {
-        username = System.getenv(${githubUsername})
+        username = System.getenv(${owner})
         password = System.getenv(${githubToken})
         }
     }

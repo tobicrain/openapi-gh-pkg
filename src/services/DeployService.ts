@@ -5,7 +5,7 @@ import { execute } from "../util/syncToAsync";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
-const githubUsername = core.getInput(Constants.GITHUB_USERNAME);
+const ownerName = github.context.repo.owner as string;
 const githubToken = core.getInput(Constants.GITHUB_TOKEN);
 const npmToken = core.getInput(Constants.NPM_TOKEN);
 
@@ -13,7 +13,6 @@ const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
 const outputPath = core.getInput(Constants.OUTPUT_PATH);
 
 const repoName = github.context.repo.repo as string;
-const ownerName = github.context.repo.owner as string;
 
 const dottedArtifact = repoName.replace(/-/g, ".");
 const firstArtifact = dottedArtifact.split(".")[0];
@@ -79,7 +78,6 @@ export default class DeployService {
       Constants.GRADLE_DISTRIBUTION(
         ownerName,
         repoName,
-        githubUsername,
         githubToken
       )
     );
@@ -124,7 +122,7 @@ export default class DeployService {
     await execute(`
       mkdir ~/.m2;
       touch ~/.m2/settings.xml;
-      echo '${Constants.SETTINGS_XML(githubUsername, githubToken)}' > ~/.m2/settings.xml;
+      echo '${Constants.SETTINGS_XML(ownerName, githubToken)}' > ~/.m2/settings.xml;
     `)
 
     await execute(

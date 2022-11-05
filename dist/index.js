@@ -117,13 +117,12 @@ const js_yaml_1 = __importDefault(__nccwpck_require__(1917));
 const syncToAsync_1 = __nccwpck_require__(4751);
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-const githubUsername = core.getInput(constants_1.default.GITHUB_USERNAME);
+const ownerName = github.context.repo.owner;
 const githubToken = core.getInput(constants_1.default.GITHUB_TOKEN);
 const npmToken = core.getInput(constants_1.default.NPM_TOKEN);
 const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
 const outputPath = core.getInput(constants_1.default.OUTPUT_PATH);
 const repoName = github.context.repo.repo;
-const ownerName = github.context.repo.owner;
 const dottedArtifact = repoName.replace(/-/g, ".");
 const firstArtifact = dottedArtifact.split(".")[0];
 class DeployService {
@@ -159,7 +158,7 @@ class DeployService {
             yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"`);
             core.notice(`Generated Kotlin Client code`);
             const gradleFile = yield fs.promises.readFile(`${outputPath}/build.gradle`, "utf8");
-            const newGradleFile = gradleFile.replace("repositories {", constants_1.default.GRADLE_DISTRIBUTION(ownerName, repoName, githubUsername, githubToken));
+            const newGradleFile = gradleFile.replace("repositories {", constants_1.default.GRADLE_DISTRIBUTION(ownerName, repoName, githubToken));
             core.notice(`Modified project and properties in build.gradle`);
             yield fs.promises.writeFile(`${outputPath}/build.gradle`, newGradleFile, "utf8");
             core.notice(`Updated build.gradle`);
@@ -187,7 +186,7 @@ class DeployService {
             yield (0, syncToAsync_1.execute)(`
       mkdir ~/.m2;
       touch ~/.m2/settings.xml;
-      echo '${constants_1.default.SETTINGS_XML(githubUsername, githubToken)}' > ~/.m2/settings.xml;
+      echo '${constants_1.default.SETTINGS_XML(ownerName, githubToken)}' > ~/.m2/settings.xml;
     `);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`);
             core.notice(`Deployed to GitHub Packages`);
@@ -214,13 +213,13 @@ Constants.GITHUB_TOKEN = "GITHUB_TOKEN";
 Constants.OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
 Constants.OUTPUT_PATH = "OUTPUT_PATH";
 Constants.NPM_TOKEN = "NPM_TOKEN";
-Constants.GRADLE_DISTRIBUTION = (owner, repoName, githubUsername, githubToken) => `
+Constants.GRADLE_DISTRIBUTION = (owner, repoName, githubToken) => `
   repositories {
     maven {
         name = "GitHubPackages"
         url = "https://maven.pkg.github.com/${owner}/${repoName}"
         credentials {
-        username = System.getenv(${githubUsername})
+        username = System.getenv(${owner})
         password = System.getenv(${githubToken})
         }
     }
