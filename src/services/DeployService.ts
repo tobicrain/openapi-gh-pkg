@@ -121,7 +121,7 @@ export default class DeployService {
     await fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
     core.notice(`Updated pom.xml`);
 
-    await execute("mkdir -p ~/.m2");
+    await execute("mkdir ~/.m2");
     core.notice(`Created ~/.m2`);
 
     await execute("touch ~/.m2/settings.xml");
