@@ -123,7 +123,10 @@ export default class DeployService {
 
     await execute("mkdir -p ~/.m2");
     core.notice(`Created ~/.m2`);
-    
+
+    await execute("touch ~/.m2/settings.xml");
+    core.notice(`Created ~/.m2/settings.xml`);
+
     await fs.promises.writeFile(`~/.m2/settings.xml`, Constants.SETTINGS_XML(githubUsername, githubToken), "utf8");
     core.notice(`Updated settings.xml`);
 
