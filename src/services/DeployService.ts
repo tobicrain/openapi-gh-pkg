@@ -41,9 +41,11 @@ export default class DeployService {
 
     await fs.promises.writeFile(
       `${outputPath}/dist/.npmrc`,
-      `
-registry=https://npm.pkg.github.com/${ownerName}
-//npm.pkg.github.com/:_authToken=${githubToken}`,
+`
+//npm.pkg.github.com/:_authToken=${githubToken}
+@${ownerName}:registry=https://npm.pkg.github.com
+always-auth=true
+`,
       "utf8"
     );
     core.notice(`Created .npmrc`);
