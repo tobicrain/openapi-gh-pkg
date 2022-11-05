@@ -121,11 +121,11 @@ export default class DeployService {
     await fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
     core.notice(`Updated pom.xml`);
 
-    await fs.promises.writeFile(
-    "~/.m2/settings.xml",
-     `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`,
-      "utf8"
-    );
+    const test = await execute(`
+      touch ~/.m2/settings.xml,
+      echo '<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>' > ~/.m2/settings.xml;
+    `)
+    console.log(test)
     core.notice(`Created settings.xml`);
 
     await execute(
