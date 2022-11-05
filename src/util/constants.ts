@@ -10,9 +10,9 @@ export default class Constants {
     repoName: string,
     githubToken: string
   ) => `
-  apply plugin: 'kotlin'
   plugins {
-      id("maven-publish")
+      id 'org.jetbrains.kotlin.jvm' version '1.7.20'
+      id 'maven-publish'
   }
   publishing {
       repositories {
