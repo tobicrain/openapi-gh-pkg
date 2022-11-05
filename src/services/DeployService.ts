@@ -121,22 +121,11 @@ export default class DeployService {
     await fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
     core.notice(`Updated pom.xml`);
 
-    await execute("mkdir ~/.m2");
-    core.notice(`Created ~/.m2`);
-
-    await execute("touch ~/.m2/settings.xml");
-    core.notice(`Created ~/.m2/settings.xml`);
-
-    await fs.promises.writeFile(`~/.m2/settings.xml`, Constants.SETTINGS_XML(githubUsername, githubToken), "utf8");
-    core.notice(`Updated settings.xml`);
-
-
-
-    // const test = await execute(`
-    //   mkdir ~/.m2;
-    //   touch ~/.m2/settings.xml;
-    //   echo '<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>' > ~/.m2/settings.xml;
-    // `)
+    await execute(`
+      mkdir ~/.m2;
+      touch ~/.m2/settings.xml;
+      echo '${Constants.SETTINGS_XML(githubUsername, githubToken)}' > ~/.m2/settings.xml;
+    `)
 
     await execute(
       `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`
