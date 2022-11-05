@@ -47,7 +47,6 @@ import { execute } from "./util/syncToAsync";
     core.notice(`Deployed to GitHub Packages`);
 
   } catch (error) {
-    console.error(error);
-    core.error(JSON.stringify(error));
+    core.setFailed(JSON.stringify(error));
   }
 })();
