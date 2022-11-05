@@ -44,7 +44,7 @@ export default class DeployService {
 
     const test7 = await execute(`cd ${outputPath}/dist; npm config set registry https://npm.pkg.github.com;`);
     core.notice(`npm config set registry: ${test7}`);
-    const test8 = await execute(`cd ${outputPath}/dist; npm set //npm.pkg.github.com/:_authToken ${githubToken};`);
+    const test8 = await execute(`cd ${outputPath}/dist; npm set //npm.pkg.github.com/:_authToken ${npmToken};`);
     core.notice(`npm set: ${test8}`);
     const test9 = await execute(`cd ${outputPath}/dist; npm publish;`);
     core.notice(`npm publish: ${test9}`);
