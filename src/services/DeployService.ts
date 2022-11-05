@@ -39,6 +39,12 @@ export default class DeployService {
     await execute(`cd ${outputPath}; npm run build`);
     core.notice(`npm run build`);
 
+    await fs.promises.writeFile(
+      __dirname + "/.npmrc",
+      `//npm.pkg.github.com/:_authToken=${githubToken}`,
+      "utf8"
+    );
+
     await execute(`cd ${outputPath}/dist; npm publish`);
     core.notice(`npm publish`);
   }
