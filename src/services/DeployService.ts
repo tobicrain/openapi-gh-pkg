@@ -66,13 +66,13 @@ export default class DeployService {
     const yml: any = yaml.load(ymlFile);
 
     const version = yml.info.version;
-
+  
     core.notice("Repository name: " + repoName);
     core.notice("OpenAPI file path: " + openApiPath);
     core.notice("OpenAPI version: " + version);
 
     await execute(
-      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"`
+      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"` 
     );
 
     core.notice(`Generated Kotlin Client code`);
@@ -130,14 +130,14 @@ export default class DeployService {
     core.notice(`Updated pom.xml`);
 
     await fs.promises.writeFile(
-      __dirname + "/settings.xml",
-      `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`,
+    "/settings.xml",
+     `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`,
       "utf8"
     );
     core.notice(`Created settings.xml`);
 
     await execute(
-      `cd ${outputPath}; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`
+      `cd ${outputPath}; mvn deploy --settings /settings.xml -DskipTests`
     );
     core.notice(`Deployed to GitHub Packages`);
   }
