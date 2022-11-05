@@ -52,7 +52,7 @@ always-auth=true
     );
     core.notice(`Created .npmrc`);
 
-    await execute(`cd ${outputPath}/dist; npm-cli-login -u ${githubUsername} -p ${githubToken} -e admin@tandamo.de -r https://npm.pkg.github.com`);
+    await execute(`cd ${outputPath}/dist; npx npm-cli-login -u ${githubUsername} -p ${githubToken} -e admin@tandamo.de -r https://npm.pkg.github.com`);
 
     await execute(`cd ${outputPath}/dist; npm-cli-login -u testUser -p testPass -e test@example.com npm publish`);
 //     core.notice(`npm publish`);
