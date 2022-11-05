@@ -40,9 +40,6 @@ export default class DeployService {
 
     await execute(`cd ${outputPath}; npm run build`);
     core.notice(`npm run build`);
-
-    await execute(`cd ${outputPath}/dist; npm publish`);
-    core.notice(`npm publish`);
   }
 
   static async handleKotlinClient() {
