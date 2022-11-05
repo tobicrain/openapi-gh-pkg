@@ -46,35 +46,62 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const fs = __importStar(__nccwpck_require__(7147));
 const constants_1 = __importDefault(__nccwpck_require__(4434));
-const js_yaml_1 = __importDefault(__nccwpck_require__(1917));
-const syncToAsync_1 = __nccwpck_require__(4751);
+const { exec } = __nccwpck_require__(2081);
+const yaml = __nccwpck_require__(1917);
+const distributionManagement = (owner, repoName) => `
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub ${owner} Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/${owner}/${repoName}</url>
+        </repository>
+    </distributionManagement>
+</project>
+`;
+function execute(command) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield new Promise(function (resolve, reject) {
+            exec(command, (err, stdout, stderr) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                }
+                resolve(stdout);
+            });
+        });
+    });
+}
+const properties = `
+    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+  </properties>`;
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Set all Input Parameters
         const githubUsername = core.getInput(constants_1.default.GITHUB_USERNAME);
         const githubToken = core.getInput(constants_1.default.GITHUB_TOKEN);
         const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
         const repoName = github.context.repo.repo;
         const ownerName = github.context.repo.owner;
-        const dottedArtifact = repoName.replace(/-/g, '.');
-        const firstArtifact = dottedArtifact.split('.')[0];
+        const dottedArtifactId = repoName.replace(/-/g, '.');
+        const firstArtifactId = dottedArtifactId.split('.')[0];
         const ymlFile = yield fs.promises.readFile(openApiPath, 'utf8');
-        const yml = js_yaml_1.default.load(ymlFile);
+        const yml = yaml.load(ymlFile);
         const version = yml.info.version;
         core.notice("Repository name: " + repoName);
         core.notice("OpenAPI file path: " + openApiPath);
         core.notice("OpenAPI version: " + version);
-        yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifact},artifactId=${repoName},basePackage=de.${firstArtifact},artifactVersion=${version},packageName=de.${firstArtifact},title=${repoName}`);
+        yield execute(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
         core.notice(`Generated Kotlin Spring code`);
-        const pomFile = yield fs.promises.readFile(`kotlin/pom.xml`, 'utf8');
+        const pomFile = yield fs.promises.readFile('kotlin/pom.xml', 'utf8');
         const newPomFile = pomFile
-            .replace("</project>", constants_1.default.POM_DISTRIBUTION(ownerName, repoName))
-            .replace("</properties>", constants_1.default.POM_PROPERTIES);
+            .replace("</project>", distributionManagement(ownerName, repoName))
+            .replace("</properties>", properties);
         core.notice(`Modified project and properties in pom.xml`);
-        yield fs.promises.writeFile(`kotlin/pom.xml`, newPomFile, 'utf8');
+        yield fs.promises.writeFile('kotlin/pom.xml', newPomFile, 'utf8');
         core.notice(`Updated pom.xml`);
         yield fs.promises.writeFile(__dirname + '/settings.xml', `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, 'utf8');
         core.notice(`Created settings.xml`);
-        yield (0, syncToAsync_1.execute)(`cd kotlin; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`);
+        yield execute(`cd kotlin; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`);
         core.notice(`Deployed to GitHub Packages`);
     }
     catch (error) {
@@ -111,41 +138,6 @@ Constants.POM_DISTRIBUTION = (owner, repoName) => `
 Constants.POM_PROPERTIES = `
         <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
     </properties>`;
-
-
-/***/ }),
-
-/***/ 4751:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.execute = void 0;
-const child_process_1 = __nccwpck_require__(2081);
-function execute(command) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield new Promise(function (resolve, reject) {
-            (0, child_process_1.exec)(command, (err, stdout, stderr) => {
-                if (err) {
-                    console.error(err);
-                    reject(err);
-                }
-                resolve(stdout);
-            });
-        });
-    });
-}
-exports.execute = execute;
 
 
 /***/ }),
