@@ -36,30 +36,6 @@ const properties = `
     <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
   </properties>`;
 
-function readDir() {
-  exec(`ls`, (err, stdout, stderr) => {
-    if (err) {
-      //some err occurred
-      console.error(err)
-    } else {
-      // the *entire* stdout and stderr (buffered)
-      console.log(`stdout2: ${stdout}`);
-      console.log(`stderr2: ${stderr}`);
-    }
-  })
-  // list files in current directory
-  exec(`cd ${__dirname}; ls`, (err, stdout, stderr) => {
-    if (err) {
-      //some err occurred
-      console.error(err)
-    } else {
-      // the *entire* stdout and stderr (buffered)
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-    }
-  })
-}
-
 (async () => {
   try {
     // Set all Input Parameters
@@ -90,28 +66,18 @@ function readDir() {
     const newPomFile = pomFile
       .replace("</project>", distributionManagement(ownerName, repoName))
       .replace("</properties>", properties)
-    console.log(newPomFile);
-    core.notice(`Updated pom.xml`);
+    core.notice(`Modified project and properties in pom.xml`);
 
     await fs.promises.writeFile('kotlin/pom.xml', newPomFile, 'utf8');
     core.notice(`Updated pom.xml`);
 
-    fs.writeFile(__dirname + '/settings.xml', `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, 'utf8', function (err) {
-      if (err) return console.log(err);
-      console.log('settings.xml updated');
-      readDir();
-      exec(`cd ${__dirname}/kotlin; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`, (error3: any, stdout3: any, stderr3: any) => {
-        console.log(`stdout3: ${stdout3}`);
-        console.log(`stderr3: ${stderr3}`);
-        if (error3) {
-          console.log(`error3: ${error3.message}`);
-          return;
-        }
-      });
+    await fs.promises.writeFile(__dirname + '/settings.xml', `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, 'utf8');
+    core.notice(`Created settings.xml`);
 
+    const stdout3 = await execute(`cd kotlin; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`);
+    console.log(stdout3)
+    core.notice(`Deployed to GitHub Packages`);
 
-
-    });
   } catch (error) {
     console.error(error);
     core.error(JSON.stringify(error));
