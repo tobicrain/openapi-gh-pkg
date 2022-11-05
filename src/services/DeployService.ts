@@ -124,10 +124,12 @@ export default class DeployService {
       touch ~/.m2/settings.xml;
       echo '${Constants.SETTINGS_XML(ownerName, githubToken)}' > ~/.m2/settings.xml;
     `)
+    core.notice(`Created settings.xml`);
 
-    await execute(
-      `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`
-    );
+    await execute(`cd ${outputPath}; mvn deploy`);
+    // const test = await execute(
+    //   `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`
+    // );
     core.notice(`Deployed to GitHub Packages`);
   }
 }
