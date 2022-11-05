@@ -137,7 +137,7 @@ export default class DeployService {
     core.notice(`Created settings.xml`);
 
     await execute(
-      `cd ${outputPath}; mvn deploy --settings /test/settings.xml -DskipTests`
+      `cd ${outputPath}; mvn deploy --settings /settings.xml -DskipTests`
     );
     core.notice(`Deployed to GitHub Packages`);
   }
