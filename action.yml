@@ -1,6 +1,9 @@
 name: "Openapi Generator"
 description: "Generates some Libraries based of open api file"
 inputs:
+  PLATFORMS:
+    description: "Your desired platforms"
+    required: true
   OPEN_API_FILE_PATH:
     description: "Path to openapi file"
     required: true

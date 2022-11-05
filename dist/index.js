@@ -48,14 +48,12 @@ const fs = __importStar(__nccwpck_require__(7147));
 const constants_1 = __importDefault(__nccwpck_require__(4434));
 const js_yaml_1 = __importDefault(__nccwpck_require__(1917));
 const syncToAsync_1 = __nccwpck_require__(4751);
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const githubUsername = core.getInput(constants_1.default.GITHUB_USERNAME);
-        const githubToken = core.getInput(constants_1.default.GITHUB_TOKEN);
-        const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
-        const outputPath = core.getInput(constants_1.default.OUTPUT_PATH);
-        const repoName = github.context.repo.repo;
-        const ownerName = github.context.repo.owner;
+function handleAngular(repoName, ownerName, openApiPath, outputPath) {
+    return __awaiter(this, void 0, void 0, function* () {
+    });
+}
+function handleKotlinSpring(repoName, ownerName, openApiPath, outputPath) {
+    return __awaiter(this, void 0, void 0, function* () {
         const dottedArtifact = repoName.replace(/-/g, '.');
         const firstArtifact = dottedArtifact.split('.')[0];
         const ymlFile = yield fs.promises.readFile(openApiPath, 'utf8');
@@ -77,11 +75,32 @@ const syncToAsync_1 = __nccwpck_require__(4751);
         core.notice(`Created settings.xml`);
         yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`);
         core.notice(`Deployed to GitHub Packages`);
-    }
-    catch (error) {
-        core.setFailed(JSON.stringify(error));
-    }
-}))();
+    });
+}
+const platforms = core.getInput(constants_1.default.PLATFORMS).split(",");
+const githubUsername = core.getInput(constants_1.default.GITHUB_USERNAME);
+const githubToken = core.getInput(constants_1.default.GITHUB_TOKEN);
+const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
+const outputPath = core.getInput(constants_1.default.OUTPUT_PATH);
+const repoName = github.context.repo.repo;
+const ownerName = github.context.repo.owner;
+try {
+    platforms.forEach((platform) => __awaiter(void 0, void 0, void 0, function* () {
+        switch (platform) {
+            case "kotlin-spring":
+                yield handleKotlinSpring(repoName, ownerName, openApiPath, outputPath);
+                break;
+            case "typescript-angular":
+                yield handleAngular(repoName, ownerName, openApiPath, outputPath);
+                break;
+            default:
+                break;
+        }
+    }));
+}
+catch (error) {
+    core.setFailed(JSON.stringify(error));
+}
 
 
 /***/ }),
@@ -95,6 +114,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 class Constants {
 }
 exports["default"] = Constants;
+Constants.PLATFORMS = "PLATFORMS";
 Constants.GITHUB_USERNAME = "GITHUB_USERNAME";
 Constants.GITHUB_TOKEN = "GITHUB_TOKEN";
 Constants.OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
