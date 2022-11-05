@@ -44,7 +44,7 @@ export default class DeployService {
     await execute(`
     npm config set registry https://npm.pkg.github.com
     npm set //npm.pkg.github.com/:_authToken ${githubToken}
-    npm run publish:github
+    npm publish
     `)
   }
 
