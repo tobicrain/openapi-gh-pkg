@@ -126,10 +126,16 @@ export default class DeployService {
     `)
     core.notice(`Created settings.xml`);
 
-    await execute(`cd ${outputPath}; mvn deploy`);
-    // const test = await execute(
-    //   `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`
-    // );
-    core.notice(`Deployed to GitHub Packages`);
+    try {
+      const hello = await execute(`cd ${outputPath}; mvn deploy`);
+      core.notice(`Deployed to GitHub Packages`);
+      console.log(hello);
+      // const test = await execute(
+      //   `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`
+      // );
+      core.notice(`Deployed to GitHub Packages`);
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
