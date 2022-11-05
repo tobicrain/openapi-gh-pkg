@@ -31,6 +31,13 @@ publishing {
         }
     } 
 }
+group 'de.scanq'
+version '0.1.5'
+
+wrapper {
+    gradleVersion = '7.5'
+    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
 `;
 
 static readonly SETTINGS_XML = (
