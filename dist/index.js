@@ -159,7 +159,7 @@ class DeployService {
             core.notice(`Generated Kotlin Client code`);
             const gradleFile = yield fs.promises.readFile(`${outputPath}/build.gradle`, "utf8");
             console.log(gradleFile);
-            const newGradleFile = gradleFile.replace("repositories {", constants_1.default.GRADLE_DISTRIBUTION(ownerName, repoName, githubToken));
+            const newGradleFile = gradleFile.replace("apply plugin: 'kotlin'", constants_1.default.GRADLE_DISTRIBUTION(ownerName, repoName, githubToken));
             core.notice(`Modified project and properties in build.gradle`);
             yield fs.promises.writeFile(`${outputPath}/build.gradle`, newGradleFile, "utf8");
             core.notice(`Updated build.gradle`);
@@ -216,15 +216,27 @@ Constants.OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
 Constants.OUTPUT_PATH = "OUTPUT_PATH";
 Constants.NPM_TOKEN = "NPM_TOKEN";
 Constants.GRADLE_DISTRIBUTION = (owner, repoName, githubToken) => `
-  repositories {
-    maven {
-        name = "GitHubPackages"
-        url = "https://maven.pkg.github.com/${owner}/${repoName}"
-        credentials {
-          username = "${owner}"
-          password = "${githubToken}"
+  apply plugin: 'kotlin'
+  plugins {
+      id("maven-publish")
+  }
+  publishing {
+      repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/${owner}/${repoName}"
+            credentials {
+              username = "${owner}"
+              password = "${githubToken}"
+            }
         }
-    }
+      }
+      publications {
+          gpr(MavenPublication) {
+              from(components.java)
+          }
+      }
+  }
   `;
 Constants.SETTINGS_XML = (githubUsername, githubToken) => `
   <settings>

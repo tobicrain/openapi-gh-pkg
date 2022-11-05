@@ -10,15 +10,27 @@ export default class Constants {
     repoName: string,
     githubToken: string
   ) => `
-  repositories {
-    maven {
-        name = "GitHubPackages"
-        url = "https://maven.pkg.github.com/${owner}/${repoName}"
-        credentials {
-          username = "${owner}"
-          password = "${githubToken}"
+  apply plugin: 'kotlin'
+  plugins {
+      id("maven-publish")
+  }
+  publishing {
+      repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/${owner}/${repoName}"
+            credentials {
+              username = "${owner}"
+              password = "${githubToken}"
+            }
         }
-    }
+      }
+      publications {
+          gpr(MavenPublication) {
+              from(components.java)
+          }
+      }
+  }
   `;
   static readonly SETTINGS_XML = (
     githubUsername: string,
