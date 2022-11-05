@@ -142,10 +142,10 @@ class DeployService {
             core.notice(`npm Install`);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; npm run build`);
             core.notice(`npm run build`);
-            const test8 = yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm set //npm.pkg.github.com/:_authToken ${npmToken};`);
-            core.notice(`npm set: ${test8}`);
-            const test9 = yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm publish;`);
-            core.notice(`npm publish: ${test9}`);
+            yield fs.promises.writeFile(`${outputPath}/dist/.npmrc`, `//npm.pkg.github.com/:_authToken=${npmToken}`, "utf8");
+            core.notice(`Created .npmrc`);
+            yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm publish`);
+            core.notice(`npm publish`);
         });
     }
     static handleKotlinClient() {

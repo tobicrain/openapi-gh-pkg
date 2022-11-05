@@ -42,10 +42,15 @@ export default class DeployService {
     await execute(`cd ${outputPath}; npm run build`);
     core.notice(`npm run build`);
 
-    const test8 = await execute(`cd ${outputPath}/dist; npm set //npm.pkg.github.com/:_authToken ${npmToken};`);
-    core.notice(`npm set: ${test8}`);
-    const test9 = await execute(`cd ${outputPath}/dist; npm publish;`);
-    core.notice(`npm publish: ${test9}`);
+    await fs.promises.writeFile(
+      `${outputPath}/dist/.npmrc`,
+      `//npm.pkg.github.com/:_authToken=${npmToken}`,
+      "utf8"
+    );
+    core.notice(`Created .npmrc`);
+    
+    await execute(`cd ${outputPath}/dist; npm publish`);
+    core.notice(`npm publish`);
   }
 
   static async handleKotlinClient() {
