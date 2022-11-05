@@ -4,6 +4,7 @@ export default class Constants {
   static readonly GITHUB_TOKEN = "GITHUB_TOKEN";
   static readonly OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
   static readonly OUTPUT_PATH = "OUTPUT_PATH";
+  static readonly NPM_TOKEN = "NPM_TOKEN";
   static readonly GRADLE_DISTRIBUTION = (
     owner: string,
     repoName: string,

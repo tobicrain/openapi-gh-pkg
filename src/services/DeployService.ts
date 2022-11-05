@@ -7,6 +7,7 @@ import * as github from "@actions/github";
 
 const githubUsername = core.getInput(Constants.GITHUB_USERNAME);
 const githubToken = core.getInput(Constants.GITHUB_TOKEN);
+const npmToken = core.getInput(Constants.NPM_TOKEN);
 
 const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
 const outputPath = core.getInput(Constants.OUTPUT_PATH);

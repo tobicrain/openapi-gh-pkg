@@ -17,6 +17,9 @@ inputs:
   OUTPUT_PATH:
     description: "Your output path"
     required: true
+  NPM_TOKEN:
+    description: "Your npm token"
+    required: false
 runs:
   using: node12
   main: "lib/main.js"
