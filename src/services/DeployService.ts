@@ -41,19 +41,6 @@ export default class DeployService {
     await execute(`cd ${outputPath}; npm run build`);
     core.notice(`npm run build`);
 
-    await fs.promises.writeFile(
-      `${outputPath}/dist/.npmrc`,
-`
-//npm.pkg.github.com/:_authToken=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
-@${ownerName}:registry=https://npm.pkg.github.com
-#always-auth=true
-`,
-      "utf8"
-    );
-    core.notice(`Created .npmrc`);
-    const awda = await fs.promises.readFile(`${outputPath}/dist/.npmrc`, "utf8");
-    console.log(awda);
-
     await execute(`cd ${outputPath}/dist; npm publish`);
     core.notice(`npm publish`);
   }
@@ -69,7 +56,7 @@ export default class DeployService {
     core.notice("OpenAPI version: " + version);
 
     await execute(
-      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName}-client,artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"` 
+      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"` 
     );
 
     core.notice(`Generated Kotlin Client code`);
@@ -108,7 +95,7 @@ export default class DeployService {
     core.notice("OpenAPI version: " + version);
 
     await execute(
-      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifact},artifactId=${repoName}-server,basePackage=de.${firstArtifact},artifactVersion=${version},packageName=de.${firstArtifact},title=${repoName}`
+      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifact},artifactId=${repoName},basePackage=de.${firstArtifact},artifactVersion=${version},packageName=de.${firstArtifact},title=${repoName}`
     );
     core.notice(`Generated Kotlin Spring code`);
 

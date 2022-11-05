@@ -141,14 +141,6 @@ class DeployService {
             core.notice(`npm Install`);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; npm run build`);
             core.notice(`npm run build`);
-            yield fs.promises.writeFile(`${outputPath}/dist/.npmrc`, `
-//npm.pkg.github.com/:_authToken=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
-@${ownerName}:registry=https://npm.pkg.github.com
-#always-auth=true
-`, "utf8");
-            core.notice(`Created .npmrc`);
-            const awda = yield fs.promises.readFile(`${outputPath}/dist/.npmrc`, "utf8");
-            console.log(awda);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm publish`);
             core.notice(`npm publish`);
         });
