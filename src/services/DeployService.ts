@@ -41,23 +41,11 @@ export default class DeployService {
     await execute(`cd ${outputPath}; npm run build`);
     core.notice(`npm run build`);
 
-    const test = await execute(`cd ${outputPath}/dist; ls;`);
-    core.notice(`ls dist: ${test}`);
-    const test2 = await execute(`cd ${outputPath}; ls;`);
-    core.notice(`ls: ${test2}`);
-    const test3 = await execute(`cd; ls;`);
-    core.notice(`ls: ${test3}`);
-    const test4 = await execute(`ls;`);
-    core.notice(`ls: ${test4}`);
-    const test5 = await execute(`cd ${outputPath}/dist; ls;`);
-    core.notice(`ls dist: ${test5}`);
-    const test6 = await execute(`cd ${outputPath}/dist; npm config set registry https://npm.pkg.github.com;`);
-    core.notice(`npm config set registry: ${test6}`);
     const test7 = await execute(`cd ${outputPath}/dist; npm config set registry https://npm.pkg.github.com;`);
     core.notice(`npm config set registry: ${test7}`);
-    const test8 = await execute(`cd ${outputPath}/dist;npm set //npm.pkg.github.com/:_authToken ${githubToken};`);
+    const test8 = await execute(`cd ${outputPath}/dist; npm set //npm.pkg.github.com/:_authToken ${githubToken};`);
     core.notice(`npm set: ${test8}`);
-    const test9 = await execute(`cd ${outputPath}/dist; npm publish --access public;`);
+    const test9 = await execute(`cd ${outputPath}/dist; npm publish;`);
     core.notice(`npm publish: ${test9}`);
   }
 
