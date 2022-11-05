@@ -137,14 +137,18 @@ class DeployService {
             core.notice(`npm Install`);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; npm run build`);
             core.notice(`npm run build`);
-            yield fs.promises.writeFile(`${outputPath}/dist/.npmrc`, `
-//npm.pkg.github.com/:_authToken=${githubToken}
-@${ownerName}:registry=https://npm.pkg.github.com
-always-auth=true
-`, "utf8");
-            core.notice(`Created .npmrc`);
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm publish`);
-            core.notice(`npm publish`);
+            //     await fs.promises.writeFile(
+            //       `${outputPath}/dist/.npmrc`,
+            // `
+            // //npm.pkg.github.com/:_authToken=${githubToken}
+            // @${ownerName}:registry=https://npm.pkg.github.com
+            // always-auth=true
+            // `,
+            //       "utf8"
+            //     );
+            //     core.notice(`Created .npmrc`);
+            //     await execute(`cd ${outputPath}/dist; npm publish`);
+            //     core.notice(`npm publish`);
         });
     }
     static handleKotlinSpring() {
