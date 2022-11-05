@@ -28,6 +28,8 @@ export default class DeployService {
     core.notice("OpenAPI file path: " + openApiPath);
     core.notice("OpenAPI version: " + version);
 
+    console.log(githubToken);
+
     await execute(
       `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g typescript-angular -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=npmName=@${ownerName}/${repoName},npmRepository=https://npm.pkg.github.com/`
     );
