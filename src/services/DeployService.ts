@@ -28,8 +28,6 @@ export default class DeployService {
     core.notice("OpenAPI file path: " + openApiPath);
     core.notice("OpenAPI version: " + version);
 
-    console.log(githubToken);
-
     await execute(
       `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g typescript-angular -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=npmName=@${ownerName}/${repoName},npmRepository=https://npm.pkg.github.com/`
     );
@@ -73,13 +71,10 @@ export default class DeployService {
       "utf8"
     );
 
-    console.log(gradleFile);
-
     const newGradleFile = gradleFile.replace(
       "apply plugin: 'kotlin'",
       Constants.GRADLE_PLUGINS(ownerName, repoName, githubToken));
-    core.notice(`Modified project and properties in build.gradle`);
-    console.log(newGradleFile)
+    core.notice(`Modified build.gradle`);
 
     await fs.promises.writeFile(
       `${outputPath}/build.gradle`,
