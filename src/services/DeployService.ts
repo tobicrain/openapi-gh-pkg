@@ -125,6 +125,7 @@ export default class DeployService {
       echo '${Constants.SETTINGS_XML(ownerName, githubToken)}' > ~/.m2/settings.xml;
     `)
     core.notice(`Created settings.xml`);
+    console.log(Constants.SETTINGS_XML(ownerName, githubToken))
     
     await execute(
       `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`

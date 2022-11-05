@@ -189,6 +189,7 @@ class DeployService {
       echo '${constants_1.default.SETTINGS_XML(ownerName, githubToken)}' > ~/.m2/settings.xml;
     `);
             core.notice(`Created settings.xml`);
+            console.log(constants_1.default.SETTINGS_XML(ownerName, githubToken));
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`);
             core.notice(`Deployed to GitHub Packages`);
         });
