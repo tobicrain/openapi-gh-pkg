@@ -119,6 +119,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const githubUsername = core.getInput(constants_1.default.GITHUB_USERNAME);
 const githubToken = core.getInput(constants_1.default.GITHUB_TOKEN);
+const npmToken = core.getInput(constants_1.default.NPM_TOKEN);
 const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
 const outputPath = core.getInput(constants_1.default.OUTPUT_PATH);
 const repoName = github.context.repo.repo;
@@ -185,9 +186,9 @@ class DeployService {
             core.notice(`Modified project and properties in pom.xml`);
             yield fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
             core.notice(`Updated pom.xml`);
-            yield fs.promises.writeFile(__dirname + "/settings.xml", `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, "utf8");
+            yield fs.promises.writeFile("/settings.xml", `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, "utf8");
             core.notice(`Created settings.xml`);
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`);
+            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings /settings.xml -DskipTests`);
             core.notice(`Deployed to GitHub Packages`);
         });
     }
@@ -211,6 +212,7 @@ Constants.GITHUB_USERNAME = "GITHUB_USERNAME";
 Constants.GITHUB_TOKEN = "GITHUB_TOKEN";
 Constants.OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
 Constants.OUTPUT_PATH = "OUTPUT_PATH";
+Constants.NPM_TOKEN = "NPM_TOKEN";
 Constants.GRADLE_DISTRIBUTION = (owner, repoName, githubUsername, githubToken) => `
   repositories {
     maven {
