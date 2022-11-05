@@ -203,12 +203,10 @@ exports["default"] = DeployService;
 
 "use strict";
 
-var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 class Constants {
 }
 exports["default"] = Constants;
-_a = Constants;
 Constants.PLATFORMS = "PLATFORMS";
 Constants.GITHUB_USERNAME = "GITHUB_USERNAME";
 Constants.GITHUB_TOKEN = "GITHUB_TOKEN";
@@ -225,8 +223,8 @@ publishing {
           name = "GitHubPackages"
           url = "https://maven.pkg.github.com/${owner}/${repoName}"
           credentials {
-            username = System.getenv("GITHUB_REPOSITORY_OWNER")
-            password = System.getenv("${_a.GITHUB_TOKEN}")
+            username = "${owner}"
+            password = "${githubToken}"
           }
       }
     }
