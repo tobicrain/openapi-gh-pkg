@@ -220,8 +220,8 @@ Constants.GRADLE_DISTRIBUTION = (owner, repoName, githubToken) => `
         name = "GitHubPackages"
         url = "https://maven.pkg.github.com/${owner}/${repoName}"
         credentials {
-        username = System.getenv(${owner})
-        password = System.getenv(${githubToken})
+        username = ${owner}
+        password = ${githubToken}
         }
     }
   `;

@@ -15,8 +15,8 @@ export default class Constants {
         name = "GitHubPackages"
         url = "https://maven.pkg.github.com/${owner}/${repoName}"
         credentials {
-        username = System.getenv(${owner})
-        password = System.getenv(${githubToken})
+        username = ${owner}
+        password = ${githubToken}
         }
     }
   `;
