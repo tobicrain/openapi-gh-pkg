@@ -60,6 +60,19 @@ const distributionManagement = `
     </distributionManagement>
 </project>
 `;
+function execute(command) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield new Promise(function (resolve, reject) {
+            exec(command, (err, stdout, stderr) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                }
+                resolve(stdout);
+            });
+        });
+    });
+}
 const properties = (/* unused pure expression or super */ null && (`
     <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
   </properties>`));
@@ -100,18 +113,8 @@ function readDir() {
         const dottedArtifactId = repoName.replace(/-/g, '.');
         const firstArtifactId = dottedArtifactId.split('.')[0];
         console.log(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
-        exec(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`, (err, stdout, stderr) => {
-            if (err) {
-                //some err occurred
-                console.error(err);
-            }
-            else {
-                // the *entire* stdout and stderr (buffered)
-                console.log(`stdout: ${stdout}`);
-                console.log(`stderr: ${stderr}`);
-                readDir();
-            }
-        });
+        const stdout = yield execute(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o kotlin --git-user-id "${owner}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifactId},artifactId=${repoName},basePackage=de.${firstArtifactId},artifactVersion=${version},packageName=de.${firstArtifactId},title=${repoName}`);
+        console.log(`stdout: ${stdout}`);
         // const data = await fs.promises.readFile('kotlin/pom.xml', 'utf8')
         // console.log(data)
         // // exec(, (_error: any, _stdout: any, _stderr: any) => {
