@@ -4,6 +4,7 @@ import yaml from "js-yaml";
 import { execute } from "../util/syncToAsync";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
+import { exec } from "child_process";
 
 const ownerName = github.context.repo.owner as string;
 const githubToken = core.getInput(Constants.GITHUB_TOKEN);
@@ -129,9 +130,17 @@ export default class DeployService {
     try {
       const awd = await execute(`cd ${outputPath}; ls`);
       console.log(awd);
-      const hello = await execute(`cd ${outputPath}; mvn deploy`);
-      core.notice(`Deployed to GitHub Packages`);
-      console.log(hello);
+      exec(`cd ${outputPath}; mvn deploy`, (err, stdout, stderr) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log(stdout);
+        core.notice(`Deployed to GitHub Packages`);
+      })
+      // const hello = await execute(`cd ${outputPath}; mvn deploy`);
+      // core.notice(`Deployed to GitHub Packages`);
+      // console.log(hello);
       // const test = await execute(
       //   `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`
       // );
