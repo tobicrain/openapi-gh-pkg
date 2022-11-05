@@ -42,9 +42,10 @@ export default class DeployService {
     core.notice(`npm run build`);
 
     await execute(`
-    npm config set registry https://npm.pkg.github.com
-    npm set //npm.pkg.github.com/:_authToken ${githubToken}
-    npm publish
+    cd ${outputPath}/dist;
+    npm config set registry https://npm.pkg.github.com;
+    npm set //npm.pkg.github.com/:_authToken ${githubToken};
+    npm publish;
     `)
   }
 
