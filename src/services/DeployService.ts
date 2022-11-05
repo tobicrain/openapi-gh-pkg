@@ -76,7 +76,11 @@ export default class DeployService {
     console.log(gradleFile);
 
     const newGradleFile = gradleFile.replace(
-      "group ",
+      `
+
+
+
+repositories {`,
       Constants.GRADLE_PLUGINS()
     ).replace(
       "apply plugin: 'kotlin'",
