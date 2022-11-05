@@ -41,21 +41,24 @@ export default class DeployService {
     await execute(`cd ${outputPath}; npm run build`);
     core.notice(`npm run build`);
 
-    const test = await execute(`cd ${outputPath}/dist; ls;`)
+    const test = await execute(`cd ${outputPath}/dist; ls;`);
     core.notice(`ls dist: ${test}`);
-    const test2 = await execute(`cd ${outputPath}; ls;`)
+    const test2 = await execute(`cd ${outputPath}; ls;`);
     core.notice(`ls: ${test2}`);
-    const test3 = await execute(`cd; ls;`)
+    const test3 = await execute(`cd; ls;`);
     core.notice(`ls: ${test3}`);
-    const test4 = await execute(`ls;`)
+    const test4 = await execute(`ls;`);
     core.notice(`ls: ${test4}`);
-    const test5 = await execute(`
-      cd ${outputPath}/dist;
-      npm config set registry https://npm.pkg.github.com;
-      npm set //npm.pkg.github.com/:_authToken ${githubToken};
-      npm publish --access public;
-    `)
-    core.notice(`npm publish: ${test5}`);
+    const test5 = await execute(`cd ${outputPath}/dist; ls;`);
+    core.notice(`ls dist: ${test5}`);
+    const test6 = await execute(`cd ${outputPath}/dist; npm config set registry https://npm.pkg.github.com;`);
+    core.notice(`npm config set registry: ${test6}`);
+    const test7 = await execute(`cd ${outputPath}/dist; npm config set registry https://npm.pkg.github.com;`);
+    core.notice(`npm config set registry: ${test7}`);
+    const test8 = await execute(`cd ${outputPath}/dist;npm set //npm.pkg.github.com/:_authToken ${githubToken};`);
+    core.notice(`npm set: ${test8}`);
+    const test9 = await execute(`cd ${outputPath}/dist; npm publish --access public;`);
+    core.notice(`npm publish: ${test9}`);
   }
 
   static async handleKotlinClient() {
@@ -63,29 +66,41 @@ export default class DeployService {
     const yml: any = yaml.load(ymlFile);
 
     const version = yml.info.version;
-  
+
     core.notice("Repository name: " + repoName);
     core.notice("OpenAPI file path: " + openApiPath);
     core.notice("OpenAPI version: " + version);
 
     await execute(
-      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"` 
+      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"`
     );
 
     core.notice(`Generated Kotlin Client code`);
 
-    const gradleFile = await fs.promises.readFile(`${outputPath}/build.gradle`, "utf8");
+    const gradleFile = await fs.promises.readFile(
+      `${outputPath}/build.gradle`,
+      "utf8"
+    );
 
-    const newGradleFile = gradleFile
-      .replace("repositories {", Constants.GRADLE_DISTRIBUTION(ownerName, repoName, githubUsername, githubToken))
+    const newGradleFile = gradleFile.replace(
+      "repositories {",
+      Constants.GRADLE_DISTRIBUTION(
+        ownerName,
+        repoName,
+        githubUsername,
+        githubToken
+      )
+    );
     core.notice(`Modified project and properties in build.gradle`);
 
-    await fs.promises.writeFile(`${outputPath}/build.gradle`, newGradleFile, "utf8");
+    await fs.promises.writeFile(
+      `${outputPath}/build.gradle`,
+      newGradleFile,
+      "utf8"
+    );
     core.notice(`Updated build.gradle`);
 
-    await execute(
-      `cd ${outputPath}; gradle publish`
-    );
+    await execute(`cd ${outputPath}; gradle publish`);
     core.notice(`Deployed to GitHub Packages`);
   }
 

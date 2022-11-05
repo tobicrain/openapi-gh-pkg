@@ -4,7 +4,12 @@ export default class Constants {
   static readonly GITHUB_TOKEN = "GITHUB_TOKEN";
   static readonly OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
   static readonly OUTPUT_PATH = "OUTPUT_PATH";
-  static readonly GRADLE_DISTRIBUTION =(owner: string, repoName: string, githubUsername: string, githubToken: string) => `
+  static readonly GRADLE_DISTRIBUTION = (
+    owner: string,
+    repoName: string,
+    githubUsername: string,
+    githubToken: string
+  ) => `
   repositories {
     maven {
         name = "GitHubPackages"
@@ -14,7 +19,7 @@ export default class Constants {
         password = System.getenv(${githubToken})
         }
     }
-  `
+  `;
   static readonly POM_DISTRIBUTION = (owner: string, repoName: string) => `
         <distributionManagement>
             <repository>
