@@ -15,6 +15,9 @@ const platform = core.getInput(Constants.PLATFORMS) as SupportedPlatforms;
       case "typescript-angular":
         await DeployService.handleAngular();
         break;
+      case "kotlin":
+        await DeployService.handleKotlinClient();
+        break;
       default:
         break;
     }

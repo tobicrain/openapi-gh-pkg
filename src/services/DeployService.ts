@@ -58,6 +58,45 @@ always-auth=true
 //     core.notice(`npm publish`);
   }
 
+  static async handleKotlinClient() {
+    const ymlFile = await fs.promises.readFile(openApiPath, "utf8");
+    const yml: any = yaml.load(ymlFile);
+
+    const version = yml.info.version;
+  
+    core.notice("Repository name: " + repoName);
+    core.notice("OpenAPI file path: " + openApiPath);
+    core.notice("OpenAPI version: " + version);
+
+    await execute(
+      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"` 
+    );
+
+    core.notice(`Generated Kotlin Client code`);
+
+    const pomFile = await fs.promises.readFile(`${outputPath}/pom.xml`, "utf8");
+
+    const newPomFile = pomFile
+      .replace("</project>", Constants.POM_DISTRIBUTION(ownerName, repoName))
+      .replace("</properties>", Constants.POM_PROPERTIES);
+    core.notice(`Modified project and properties in pom.xml`);
+
+    await fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
+    core.notice(`Updated pom.xml`);
+
+    await fs.promises.writeFile(
+      __dirname + "/settings.xml",
+      `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`,
+      "utf8"
+    );
+    core.notice(`Created settings.xml`);
+
+    await execute(
+      `cd ${outputPath}; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`
+    );
+    core.notice(`Deployed to GitHub Packages`);
+  }
+
   static async handleKotlinSpring() {
     const ymlFile = await fs.promises.readFile(openApiPath, "utf8");
     const yml: any = yaml.load(ymlFile);
