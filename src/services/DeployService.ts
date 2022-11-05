@@ -44,6 +44,7 @@ export default class DeployService {
       `//npm.pkg.github.com/:_authToken=${githubToken}`,
       "utf8"
     );
+    core.notice(`Created .npmrc`);
 
     await execute(`cd ${outputPath}/dist; npm publish`);
     core.notice(`npm publish`);
