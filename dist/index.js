@@ -137,7 +137,7 @@ class DeployService {
             core.notice(`npm Install`);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; npm run build`);
             core.notice(`npm run build`);
-            yield fs.promises.writeFile(__dirname + "/.npmrc", `//npm.pkg.github.com/:_authToken=${githubToken}`, "utf8");
+            yield fs.promises.writeFile(`${outputPath}/dist/.npmrc`, `//npm.pkg.github.com/:_authToken=${githubToken}`, "utf8");
             core.notice(`Created .npmrc`);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm publish`);
             core.notice(`npm publish`);

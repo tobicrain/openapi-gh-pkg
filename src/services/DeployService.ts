@@ -40,7 +40,7 @@ export default class DeployService {
     core.notice(`npm run build`);
 
     await fs.promises.writeFile(
-      __dirname + "/.npmrc",
+      `${outputPath}/dist/.npmrc`,
       `//npm.pkg.github.com/:_authToken=${githubToken}`,
       "utf8"
     );
