@@ -31,6 +31,7 @@ export default class Constants {
           }
       }
   }
+  wrapper {
   `;
   static readonly SETTINGS_XML = (
     githubUsername: string,

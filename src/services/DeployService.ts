@@ -76,13 +76,16 @@ export default class DeployService {
     console.log(gradleFile);
 
     const newGradleFile = gradleFile.replace(
-      "apply plugin: 'kotlin'",
+      "wrapper {",
       Constants.GRADLE_DISTRIBUTION(
         ownerName,
         repoName,
         githubToken
       )
-    );
+    ).replace(
+      "apply plugin: 'kotlin'",
+      ""
+    )
     core.notice(`Modified project and properties in build.gradle`);
     console.log(newGradleFile)
 
