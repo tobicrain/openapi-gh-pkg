@@ -101,7 +101,8 @@ const properties = `
         core.notice(`Updated pom.xml`);
         yield fs.promises.writeFile(__dirname + '/settings.xml', `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, 'utf8');
         core.notice(`Created settings.xml`);
-        yield execute(`cd kotlin; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`);
+        const stdout3 = yield execute(`cd kotlin; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`);
+        console.log(stdout3);
         core.notice(`Deployed to GitHub Packages`);
     }
     catch (error) {

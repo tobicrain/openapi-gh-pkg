@@ -74,7 +74,8 @@ const properties = `
     await fs.promises.writeFile(__dirname + '/settings.xml', `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, 'utf8');
     core.notice(`Created settings.xml`);
 
-    await execute(`cd kotlin; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`);
+    const stdout3 = await execute(`cd kotlin; mvn deploy --settings ${__dirname}/settings.xml -DskipTests`);
+    console.log(stdout3)
     core.notice(`Deployed to GitHub Packages`);
 
   } catch (error) {
