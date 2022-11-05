@@ -48,7 +48,7 @@ export default class DeployService {
       "utf8"
     );
     core.notice(`Created .npmrc`);
-    
+
     await execute(`cd ${outputPath}/dist; npm publish`);
     core.notice(`npm publish`);
   }
@@ -122,14 +122,14 @@ export default class DeployService {
     core.notice(`Updated pom.xml`);
 
     await fs.promises.writeFile(
-    "/settings.xml",
+    ".m2/settings.xml",
      `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`,
       "utf8"
     );
     core.notice(`Created settings.xml`);
 
     await execute(
-      `cd ${outputPath}; mvn deploy --settings /settings.xml -DskipTests`
+      `cd ${outputPath}; mvn deploy --settings .m2/settings.xml -DskipTests`
     );
     core.notice(`Deployed to GitHub Packages`);
   }

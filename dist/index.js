@@ -184,9 +184,9 @@ class DeployService {
             core.notice(`Modified project and properties in pom.xml`);
             yield fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
             core.notice(`Updated pom.xml`);
-            yield fs.promises.writeFile("/settings.xml", `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, "utf8");
+            yield fs.promises.writeFile(".m2/settings.xml", `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, "utf8");
             core.notice(`Created settings.xml`);
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings /settings.xml -DskipTests`);
+            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings .m2/settings.xml -DskipTests`);
             core.notice(`Deployed to GitHub Packages`);
         });
     }
