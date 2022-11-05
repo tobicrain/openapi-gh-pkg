@@ -127,6 +127,8 @@ export default class DeployService {
     core.notice(`Created settings.xml`);
 
     try {
+      const awd = await execute(`cd ${outputPath}; ls`);
+      console.log(awd);
       const hello = await execute(`cd ${outputPath}; mvn deploy`);
       core.notice(`Deployed to GitHub Packages`);
       console.log(hello);
