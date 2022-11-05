@@ -4,7 +4,6 @@ import yaml from "js-yaml";
 import { execute } from "../util/syncToAsync";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import { exec } from "child_process";
 
 const ownerName = github.context.repo.owner as string;
 const githubToken = core.getInput(Constants.GITHUB_TOKEN);
@@ -74,6 +73,8 @@ export default class DeployService {
       "utf8"
     );
 
+    console.log(gradleFile);
+
     const newGradleFile = gradleFile.replace(
       "repositories {",
       Constants.GRADLE_DISTRIBUTION(
@@ -126,20 +127,10 @@ export default class DeployService {
       echo '${Constants.SETTINGS_XML(ownerName, githubToken)}' > ~/.m2/settings.xml;
     `)
     core.notice(`Created settings.xml`);
-    console.log(Constants.SETTINGS_XML(ownerName, githubToken))
     
-    const zaudg = await execute(`cd ${outputPath}; ls;`);
-    console.log(zaudg);
-    exec(`cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`, (error, stdout, stderr) => {
-      console.log(stdout);
-      console.log(stderr);
-      if (error !== null) {
-        console.log(`exec error: ${error}`);
-      }
-    });
-    // await execute(
-    //   `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`
-    // );
+    await execute(
+      `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`
+    );
     core.notice(`Deployed to GitHub Packages`);
   }
 }
