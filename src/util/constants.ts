@@ -9,10 +9,8 @@ export default class Constants {
     owner: string,
     repoName: string,
     githubToken: string) => `
-plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
-    id 'maven-publish'
-}
+apply plugin: 'kotlin'
+apply plugin: 'maven-publish'
 
 publishing {
     repositories {
@@ -30,15 +28,7 @@ publishing {
             from(components.java)
         }
     } 
-}
-group 'de.scanq'
-version '0.1.5'
-
-wrapper {
-    gradleVersion = '7.5'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
-}
-`;
+}`;
 
 static readonly SETTINGS_XML = (
     githubUsername: string,

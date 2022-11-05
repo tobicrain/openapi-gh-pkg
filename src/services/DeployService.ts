@@ -75,14 +75,7 @@ export default class DeployService {
 
     console.log(gradleFile);
 
-    const newGradleFile = gradleFile.replace(`
-group 'de.scanq'
-version '0.1.5'
-
-wrapper {
-    gradleVersion = '7.5'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
-}`, "").replace(
+    const newGradleFile = gradleFile.replace(
       "apply plugin: 'kotlin'",
       Constants.GRADLE_PLUGINS(ownerName, repoName, githubToken));
     core.notice(`Modified project and properties in build.gradle`);

@@ -159,14 +159,7 @@ class DeployService {
             core.notice(`Generated Kotlin Client code`);
             const gradleFile = yield fs.promises.readFile(`${outputPath}/build.gradle`, "utf8");
             console.log(gradleFile);
-            const newGradleFile = gradleFile.replace(`
-group 'de.scanq'
-version '0.1.5'
-
-wrapper {
-    gradleVersion = '7.5'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
-}`, "").replace("apply plugin: 'kotlin'", constants_1.default.GRADLE_PLUGINS(ownerName, repoName, githubToken));
+            const newGradleFile = gradleFile.replace("apply plugin: 'kotlin'", constants_1.default.GRADLE_PLUGINS(ownerName, repoName, githubToken));
             core.notice(`Modified project and properties in build.gradle`);
             console.log(newGradleFile);
             yield fs.promises.writeFile(`${outputPath}/build.gradle`, newGradleFile, "utf8");
@@ -224,10 +217,8 @@ Constants.OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
 Constants.OUTPUT_PATH = "OUTPUT_PATH";
 Constants.NPM_TOKEN = "NPM_TOKEN";
 Constants.GRADLE_PLUGINS = (owner, repoName, githubToken) => `
-plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
-    id 'maven-publish'
-}
+apply plugin: 'kotlin'
+apply plugin: 'maven-publish'
 
 publishing {
     repositories {
@@ -245,15 +236,7 @@ publishing {
             from(components.java)
         }
     } 
-}
-group 'de.scanq'
-version '0.1.5'
-
-wrapper {
-    gradleVersion = '7.5'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
-}
-`;
+}`;
 Constants.SETTINGS_XML = (githubUsername, githubToken) => `
   <settings>
     <servers>
