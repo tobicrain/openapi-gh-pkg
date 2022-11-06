@@ -61,7 +61,7 @@ export default class DeployService {
     core.notice("OpenAPI version: " + version);
 
     await execute(
-      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"` 
+      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}` 
     );
 
     core.notice(`Generated Kotlin Client code`);
