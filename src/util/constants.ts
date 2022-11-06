@@ -4,22 +4,46 @@ export default class Constants {
   static readonly GITHUB_TOKEN = "GITHUB_TOKEN";
   static readonly OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
   static readonly OUTPUT_PATH = "OUTPUT_PATH";
-  static readonly GRADLE_DISTRIBUTION = (
+  static readonly NPM_TOKEN = "NPM_TOKEN";
+  static readonly GRADLE_PLUGINS = (
     owner: string,
     repoName: string,
+    githubToken: string) => `
+apply plugin: 'kotlin'
+apply plugin: 'maven-publish'
+
+publishing {
+    repositories {
+      maven {
+          name = "GitHubPackages"
+          url = "https://maven.pkg.github.com/${owner}/${repoName}"
+          credentials {
+            username = "${owner}"
+            password = "${githubToken}"
+          }
+      }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    } 
+}`;
+
+static readonly SETTINGS_XML = (
     githubUsername: string,
     githubToken: string
   ) => `
-  repositories {
-    maven {
-        name = "GitHubPackages"
-        url = "https://maven.pkg.github.com/${owner}/${repoName}"
-        credentials {
-        username = System.getenv(${githubUsername})
-        password = System.getenv(${githubToken})
-        }
-    }
-  `;
+  <settings>
+    <servers>
+      <server>
+        <id>github</id>
+        <username>${githubUsername}</username>
+        <password>${githubToken}</password>
+      </server>
+    </servers>
+  </settings>
+  `
   static readonly POM_DISTRIBUTION = (owner: string, repoName: string) => `
         <distributionManagement>
             <repository>

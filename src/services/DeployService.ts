@@ -5,14 +5,14 @@ import { execute } from "../util/syncToAsync";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
-const githubUsername = core.getInput(Constants.GITHUB_USERNAME);
+const ownerName = github.context.repo.owner as string;
 const githubToken = core.getInput(Constants.GITHUB_TOKEN);
+const npmToken = core.getInput(Constants.NPM_TOKEN);
 
 const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
 const outputPath = core.getInput(Constants.OUTPUT_PATH);
 
 const repoName = github.context.repo.repo as string;
-const ownerName = github.context.repo.owner as string;
 
 const dottedArtifact = repoName.replace(/-/g, ".");
 const firstArtifact = dottedArtifact.split(".")[0];
@@ -28,8 +28,6 @@ export default class DeployService {
     core.notice("OpenAPI file path: " + openApiPath);
     core.notice("OpenAPI version: " + version);
 
-    console.log(githubToken);
-
     await execute(
       `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g typescript-angular -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=npmName=@${ownerName}/${repoName},npmRepository=https://npm.pkg.github.com/`
     );
@@ -41,24 +39,15 @@ export default class DeployService {
     await execute(`cd ${outputPath}; npm run build`);
     core.notice(`npm run build`);
 
-    const test = await execute(`cd ${outputPath}/dist; ls;`);
-    core.notice(`ls dist: ${test}`);
-    const test2 = await execute(`cd ${outputPath}; ls;`);
-    core.notice(`ls: ${test2}`);
-    const test3 = await execute(`cd; ls;`);
-    core.notice(`ls: ${test3}`);
-    const test4 = await execute(`ls;`);
-    core.notice(`ls: ${test4}`);
-    const test5 = await execute(`cd ${outputPath}/dist; ls;`);
-    core.notice(`ls dist: ${test5}`);
-    const test6 = await execute(`cd ${outputPath}/dist; npm config set registry https://npm.pkg.github.com;`);
-    core.notice(`npm config set registry: ${test6}`);
-    const test7 = await execute(`cd ${outputPath}/dist; npm config set registry https://npm.pkg.github.com;`);
-    core.notice(`npm config set registry: ${test7}`);
-    const test8 = await execute(`cd ${outputPath}/dist;npm set //npm.pkg.github.com/:_authToken ${githubToken};`);
-    core.notice(`npm set: ${test8}`);
-    const test9 = await execute(`cd ${outputPath}/dist; npm publish --access public;`);
-    core.notice(`npm publish: ${test9}`);
+    await fs.promises.writeFile(
+      `${outputPath}/dist/.npmrc`,
+      `//npm.pkg.github.com/:_authToken=${npmToken}`,
+      "utf8"
+    );
+    core.notice(`Created .npmrc`);
+
+    await execute(`cd ${outputPath}/dist; npm publish`);
+    core.notice(`npm publish`);
   }
 
   static async handleKotlinClient() {
@@ -83,15 +72,9 @@ export default class DeployService {
     );
 
     const newGradleFile = gradleFile.replace(
-      "repositories {",
-      Constants.GRADLE_DISTRIBUTION(
-        ownerName,
-        repoName,
-        githubUsername,
-        githubToken
-      )
-    );
-    core.notice(`Modified project and properties in build.gradle`);
+      "apply plugin: 'kotlin'",
+      Constants.GRADLE_PLUGINS(ownerName, repoName, githubToken));
+    core.notice(`Modified build.gradle`);
 
     await fs.promises.writeFile(
       `${outputPath}/build.gradle`,
@@ -129,15 +112,15 @@ export default class DeployService {
     await fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
     core.notice(`Updated pom.xml`);
 
-    await fs.promises.writeFile(
-    "/settings.xml",
-     `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`,
-      "utf8"
-    );
+    await execute(`
+      mkdir ~/.m2;
+      touch ~/.m2/settings.xml;
+      echo '${Constants.SETTINGS_XML(ownerName, githubToken)}' > ~/.m2/settings.xml;
+    `)
     core.notice(`Created settings.xml`);
-
+    
     await execute(
-      `cd ${outputPath}; mvn deploy --settings /settings.xml -DskipTests`
+      `cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`
     );
     core.notice(`Deployed to GitHub Packages`);
   }

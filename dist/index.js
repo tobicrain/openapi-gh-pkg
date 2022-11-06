@@ -117,12 +117,12 @@ const js_yaml_1 = __importDefault(__nccwpck_require__(1917));
 const syncToAsync_1 = __nccwpck_require__(4751);
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-const githubUsername = core.getInput(constants_1.default.GITHUB_USERNAME);
+const ownerName = github.context.repo.owner;
 const githubToken = core.getInput(constants_1.default.GITHUB_TOKEN);
+const npmToken = core.getInput(constants_1.default.NPM_TOKEN);
 const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
 const outputPath = core.getInput(constants_1.default.OUTPUT_PATH);
 const repoName = github.context.repo.repo;
-const ownerName = github.context.repo.owner;
 const dottedArtifact = repoName.replace(/-/g, ".");
 const firstArtifact = dottedArtifact.split(".")[0];
 class DeployService {
@@ -134,31 +134,16 @@ class DeployService {
             core.notice("Repository name: " + repoName);
             core.notice("OpenAPI file path: " + openApiPath);
             core.notice("OpenAPI version: " + version);
-            console.log(githubToken);
             yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g typescript-angular -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=npmName=@${ownerName}/${repoName},npmRepository=https://npm.pkg.github.com/`);
             core.notice(`Generated Angular code`);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; npm install`);
             core.notice(`npm Install`);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; npm run build`);
             core.notice(`npm run build`);
-            const test = yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; ls;`);
-            core.notice(`ls dist: ${test}`);
-            const test2 = yield (0, syncToAsync_1.execute)(`cd ${outputPath}; ls;`);
-            core.notice(`ls: ${test2}`);
-            const test3 = yield (0, syncToAsync_1.execute)(`cd; ls;`);
-            core.notice(`ls: ${test3}`);
-            const test4 = yield (0, syncToAsync_1.execute)(`ls;`);
-            core.notice(`ls: ${test4}`);
-            const test5 = yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; ls;`);
-            core.notice(`ls dist: ${test5}`);
-            const test6 = yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm config set registry https://npm.pkg.github.com;`);
-            core.notice(`npm config set registry: ${test6}`);
-            const test7 = yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm config set registry https://npm.pkg.github.com;`);
-            core.notice(`npm config set registry: ${test7}`);
-            const test8 = yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist;npm set //npm.pkg.github.com/:_authToken ${githubToken};`);
-            core.notice(`npm set: ${test8}`);
-            const test9 = yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm publish --access public;`);
-            core.notice(`npm publish: ${test9}`);
+            yield fs.promises.writeFile(`${outputPath}/dist/.npmrc`, `//npm.pkg.github.com/:_authToken=${npmToken}`, "utf8");
+            core.notice(`Created .npmrc`);
+            yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm publish`);
+            core.notice(`npm publish`);
         });
     }
     static handleKotlinClient() {
@@ -172,8 +157,8 @@ class DeployService {
             yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}"`);
             core.notice(`Generated Kotlin Client code`);
             const gradleFile = yield fs.promises.readFile(`${outputPath}/build.gradle`, "utf8");
-            const newGradleFile = gradleFile.replace("repositories {", constants_1.default.GRADLE_DISTRIBUTION(ownerName, repoName, githubUsername, githubToken));
-            core.notice(`Modified project and properties in build.gradle`);
+            const newGradleFile = gradleFile.replace("apply plugin: 'kotlin'", constants_1.default.GRADLE_PLUGINS(ownerName, repoName, githubToken));
+            core.notice(`Modified build.gradle`);
             yield fs.promises.writeFile(`${outputPath}/build.gradle`, newGradleFile, "utf8");
             core.notice(`Updated build.gradle`);
             yield (0, syncToAsync_1.execute)(`cd ${outputPath}; gradle publish`);
@@ -197,9 +182,13 @@ class DeployService {
             core.notice(`Modified project and properties in pom.xml`);
             yield fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
             core.notice(`Updated pom.xml`);
-            yield fs.promises.writeFile("/settings.xml", `<settings><servers><server><id>github</id><username>${githubUsername}</username><password>${githubToken}</password></server></servers></settings>`, "utf8");
+            yield (0, syncToAsync_1.execute)(`
+      mkdir ~/.m2;
+      touch ~/.m2/settings.xml;
+      echo '${constants_1.default.SETTINGS_XML(ownerName, githubToken)}' > ~/.m2/settings.xml;
+    `);
             core.notice(`Created settings.xml`);
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings /settings.xml -DskipTests`);
+            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`);
             core.notice(`Deployed to GitHub Packages`);
         });
     }
@@ -223,16 +212,38 @@ Constants.GITHUB_USERNAME = "GITHUB_USERNAME";
 Constants.GITHUB_TOKEN = "GITHUB_TOKEN";
 Constants.OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
 Constants.OUTPUT_PATH = "OUTPUT_PATH";
-Constants.GRADLE_DISTRIBUTION = (owner, repoName, githubUsername, githubToken) => `
-  repositories {
-    maven {
-        name = "GitHubPackages"
-        url = "https://maven.pkg.github.com/${owner}/${repoName}"
-        credentials {
-        username = System.getenv(${githubUsername})
-        password = System.getenv(${githubToken})
-        }
+Constants.NPM_TOKEN = "NPM_TOKEN";
+Constants.GRADLE_PLUGINS = (owner, repoName, githubToken) => `
+apply plugin: 'kotlin'
+apply plugin: 'maven-publish'
+
+publishing {
+    repositories {
+      maven {
+          name = "GitHubPackages"
+          url = "https://maven.pkg.github.com/${owner}/${repoName}"
+          credentials {
+            username = "${owner}"
+            password = "${githubToken}"
+          }
+      }
     }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    } 
+}`;
+Constants.SETTINGS_XML = (githubUsername, githubToken) => `
+  <settings>
+    <servers>
+      <server>
+        <id>github</id>
+        <username>${githubUsername}</username>
+        <password>${githubToken}</password>
+      </server>
+    </servers>
+  </settings>
   `;
 Constants.POM_DISTRIBUTION = (owner, repoName) => `
         <distributionManagement>
