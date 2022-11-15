@@ -49,8 +49,8 @@ const platform = core.getInput(constants_1.default.PLATFORMS);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         switch (platform) {
-            case "kotlin-spring":
-                yield DeployService_1.default.handleKotlinSpring();
+            case "spring":
+                yield DeployService_1.default.handleSpring();
                 break;
             case "typescript-angular":
                 yield DeployService_1.default.handleAngular();
@@ -165,7 +165,7 @@ class DeployService {
             core.notice(`Deployed to GitHub Packages`);
         });
     }
-    static handleKotlinSpring() {
+    static handleSpring() {
         return __awaiter(this, void 0, void 0, function* () {
             const ymlFile = yield fs.promises.readFile(openApiPath, "utf8");
             const yml = js_yaml_1.default.load(ymlFile);
@@ -173,7 +173,7 @@ class DeployService {
             core.notice("Repository name: " + repoName);
             core.notice("OpenAPI file path: " + openApiPath);
             core.notice("OpenAPI version: " + version);
-            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifact},artifactId=${repoName},basePackage=de.${firstArtifact},artifactVersion=${version},packageName=de.${firstArtifact},title=${repoName}`);
+            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifact},artifactId=${repoName},basePackage=de.${firstArtifact},artifactVersion=${version},packageName=de.${firstArtifact},title=${repoName}`);
             core.notice(`Generated Kotlin Spring code`);
             const pomFile = yield fs.promises.readFile(`${outputPath}/pom.xml`, "utf8");
             const newPomFile = pomFile
