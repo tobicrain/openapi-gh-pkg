@@ -2,15 +2,15 @@ import * as core from "@actions/core";
 import Constants from "./util/constants";
 import DeployService from "./services/DeployService";
 
-type SupportedPlatforms = "spring" | "typescript-angular" | "kotlin";
+type SupportedPlatforms = "kotlin-spring" | "typescript-angular" | "kotlin";
 
 const platform = core.getInput(Constants.PLATFORMS) as SupportedPlatforms;
 
 (async () => {
   try {
     switch (platform) {
-      case "spring":
-        await DeployService.handleSpring();
+      case "kotlin-spring":
+        await DeployService.handleKotlinSpring();
         break;
       case "typescript-angular":
         await DeployService.handleAngular();
