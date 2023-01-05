@@ -292,32 +292,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GradleService = void 0;
+const constants_1 = __importDefault(__nccwpck_require__(4434));
 const syncToAsync_1 = __nccwpck_require__(4751);
 class GradleService {
     static applyPluginsAndPublishing(gradleFile, owner, githubToken, repoName) {
-        const publishingConfig = `
-      publishing {
-          repositories {
-            maven {
-                name = "GitHubPackages"
-                url = "https://maven.pkg.github.com/${owner}/${repoName}"
-                credentials {
-                  username = "${owner}"
-                  password = "${githubToken}"
-                }
-            }
-          }
-          publications {
-              gpr(MavenPublication) {
-                  from(components.java)
-              }
-          } 
-      }`;
-        return gradleFile
-            .replace("plugins {", "plugins {\n    id 'kotlin'\n    id 'maven-publish'")
-            .replace("publishing {", publishingConfig);
+        const newGradleFile = gradleFile.replace("apply plugin: 'kotlin'", constants_1.default.GRADLE_PLUGINS(owner, repoName, githubToken));
+        return newGradleFile;
     }
     static publish(outputPath) {
         return __awaiter(this, void 0, void 0, function* () {
