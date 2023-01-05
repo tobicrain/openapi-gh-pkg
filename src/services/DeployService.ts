@@ -74,21 +74,7 @@ export default class DeployService {
     core.notice("OpenAPI file path: " + openApiPath);
     core.notice("OpenAPI version: " + version);
 
-    await execute(
-      `
-      npx @openapitools/openapi-generator-cli generate 
-      -i ${openApiPath} 
-      -g kotlin 
-      -o ${outputPath} 
-      --git-user-id ${ownerName} 
-      --git-repo-id ${repoName} 
-      --additional-properties=
-      artifactId=${artifactId},
-      artifactVersion=${version},
-      groupId=${groupID},
-      packageName=${packageName}
-      `.replace(/\s+/g, " ")
-    );
+    await execute(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID},packageName=${packageName}`);
 
     core.notice(`Generated Kotlin Client code`);
 
@@ -128,34 +114,8 @@ export default class DeployService {
     core.notice(`artifactVersion=${version},`)
     core.notice(`groupId=${groupID},`)
     core.notice(`packageName=${packageName}`)
-    core.notice(`
-    npx @openapitools/openapi-generator-cli generate 
-    -i ${openApiPath} 
-    -g spring 
-    -o ${outputPath} 
-    --git-user-id ${ownerName} 
-    --git-repo-id ${repoName} 
-    --additional-properties=
-    artifactId=${artifactId},
-    artifactVersion=${version},
-    groupId=${groupID},
-    packageName=${packageName}
-    `.replace(/\s+/g, " "))
-    await execute(
-      `
-      npx @openapitools/openapi-generator-cli generate 
-      -i ${openApiPath} 
-      -g spring 
-      -o ${outputPath} 
-      --git-user-id ${ownerName} 
-      --git-repo-id ${repoName} 
-      --additional-properties=
-      artifactId=${artifactId},
-      artifactVersion=${version},
-      groupId=${groupID},
-      packageName=${packageName}
-      `.replace(/\s+/g, " ")
-    );
+    core.notice(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID},packageName=${packageName}`)
+    await execute(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID},packageName=${packageName}`);
 
     core.notice(`Generated Spring code`);
 
