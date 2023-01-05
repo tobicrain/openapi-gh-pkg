@@ -39,10 +39,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Constants = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const FileService_1 = __nccwpck_require__(5955);
-const Constants_1 = __nccwpck_require__(8920);
-const schemaFilePath = core.getInput(Constants_1.Constants.SCHEMA_FILE_PATH);
+class Constants {
+}
+exports.Constants = Constants;
+Constants.DEPLOY_TOKEN = "DEPLOY_TOKEN";
+Constants.SCHEMA_FILE_PATH = "SCHEMA_FILE_PATH";
+const schemaFilePath = core.getInput(Constants.SCHEMA_FILE_PATH);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const schemaFile = yield FileService_1.FileService.readYML(schemaFilePath);
@@ -135,22 +140,6 @@ class FileService {
     }
 }
 exports.FileService = FileService;
-
-
-/***/ }),
-
-/***/ 8920:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Constants = void 0;
-class Constants {
-}
-exports.Constants = Constants;
-Constants.DEPLOY_TOKEN = "DEPLOY_TOKEN";
-Constants.SCHEMA_FILE_PATH = "SCHEMA_FILE_PATH";
 
 
 /***/ }),
