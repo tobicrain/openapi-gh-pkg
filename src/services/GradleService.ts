@@ -27,7 +27,7 @@ export class GradleService {
     }
 
     static async publish(outputPath: string): Promise<string> {
-        return await execute(`cd ${outputPath}; ./gradlew publish`);
+        return await execute(`cd ${outputPath}; ./gradle publish`);
     }
         
 }
