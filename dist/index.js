@@ -38,16 +38,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Constants = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const FileService_1 = __nccwpck_require__(5955);
-class Constants {
-}
-exports.Constants = Constants;
-Constants.DEPLOY_TOKEN = "DEPLOY_TOKEN";
-Constants.SCHEMA_FILE_PATH = "SCHEMA_FILE_PATH";
-const schemaFilePath = core.getInput(Constants.SCHEMA_FILE_PATH);
+const Constants_1 = __importDefault(__nccwpck_require__(793));
+const schemaFilePath = core.getInput(Constants_1.default.SCHEMA_FILE_PATH);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const schemaFile = yield FileService_1.FileService.readYML(schemaFilePath);
@@ -140,6 +138,21 @@ class FileService {
     }
 }
 exports.FileService = FileService;
+
+
+/***/ }),
+
+/***/ 793:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class Constants {
+}
+exports["default"] = Constants;
+Constants.DEPLOY_TOKEN = "DEPLOY_TOKEN";
+Constants.SCHEMA_FILE_PATH = "SCHEMA_FILE_PATH";
 
 
 /***/ }),

@@ -1,12 +1,7 @@
 import * as core from "@actions/core";
 import { OpenApiYML } from "./models/OpenApiYML";
 import { FileService } from "./service/FileService";
-
-export class Constants {
-    static readonly DEPLOY_TOKEN = "DEPLOY_TOKEN";
-    static readonly SCHEMA_FILE_PATH = "SCHEMA_FILE_PATH";
-}
-
+import Constants from "./utils/Constants";
 
 const schemaFilePath = core.getInput(Constants.SCHEMA_FILE_PATH);
 
