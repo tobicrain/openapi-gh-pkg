@@ -321,7 +321,7 @@ class GradleService {
     }
     static publish(outputPath) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield (0, syncToAsync_1.execute)(`cd ${outputPath}; ./gradle publish`);
+            return yield (0, syncToAsync_1.execute)(`cd ${outputPath}; gradle publish`);
         });
     }
 }
