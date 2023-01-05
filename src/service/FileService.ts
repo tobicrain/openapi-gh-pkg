@@ -7,9 +7,9 @@ export class FileService {
         return file;
     }
 
-    static async readYML(path: string): Promise<any> {
+    static async readYML<T>(path: string): Promise<T> {
         const file = await this.read(path);
-        return yaml.load(file);
+        return yaml.load(file) as T;
     }
 
     static async write(path: string, content: string): Promise<void> {
