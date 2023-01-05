@@ -16,7 +16,7 @@ inputs:
     default: "api.yml"
   DEPLOY_TOKEN:
     description: "Your deploy token"
-    required: true
+    required: false
 runs:
   using: node12
   main: "lib/main.js"
