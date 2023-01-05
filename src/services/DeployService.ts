@@ -1,7 +1,4 @@
-import * as fs from "fs";
 import Constants from "../util/constants";
-import yaml from "js-yaml";
-import { execute } from "../util/syncToAsync";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { FileService } from "./FileService";
@@ -11,7 +8,8 @@ import { GradleService } from "./GradleService";
 import { PomService } from "./PomService";
 
 const ownerName = github.context.repo.owner as string;
-const deployToken = core.getInput(Constants.DEPLOY_TOKEN);
+// const deployToken = core.getInput(Constants.DEPLOY_TOKEN);
+const deployToken = process.env.GITHUB_TOKEN || (core.getInput('GITHUB_TOKEN', { required: true }));
 
 const jarArtifactId = core.getInput(Constants.ARTIFACT_ID);
 const jarArtifactGroupId = core.getInput(Constants.GROUP_ID);
