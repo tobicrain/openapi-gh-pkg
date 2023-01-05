@@ -1,9 +1,18 @@
 name: "Openapi Generator"
 description: "Generates some Libraries based of open api file"
 inputs:
-  PLATFORMS:
-    description: "Your desired platforms"
+  PLATFORM:
+    description: "Your desired platform"
     required: true
+  JAR_ARTIFACT_ID:
+    description: "Your desired artifact id"
+    required: false
+  JAR_GROUP_ID:
+    description: "Your desired group id"
+    required: false
+  JAR_PACKAGE_NAME:
+    description: "Your desired package name"
+    required: false
   OPEN_API_FILE_PATH:
     description: "Path to openapi file"
     required: true

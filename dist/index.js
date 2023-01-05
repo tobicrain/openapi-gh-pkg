@@ -45,12 +45,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const constants_1 = __importDefault(__nccwpck_require__(4434));
 const DeployService_1 = __importDefault(__nccwpck_require__(2524));
-const platform = core.getInput(constants_1.default.PLATFORMS);
+const platform = core.getInput(constants_1.default.PLATFORM);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         switch (platform) {
-            case "kotlin-spring":
-                yield DeployService_1.default.handleKotlinSpring();
+            case "spring":
+                yield DeployService_1.default.handleSpring();
                 break;
             case "typescript-angular":
                 yield DeployService_1.default.handleAngular();
@@ -120,11 +120,17 @@ const github = __importStar(__nccwpck_require__(5438));
 const ownerName = github.context.repo.owner;
 const githubToken = core.getInput(constants_1.default.GITHUB_TOKEN);
 const npmToken = core.getInput(constants_1.default.NPM_TOKEN);
+const jarArtifactId = core.getInput(constants_1.default.JAR_ARTIFACT_ID);
+const jarArtifactGroupId = core.getInput(constants_1.default.JAR_GROUP_ID);
+const jarArtifactPackageName = core.getInput(constants_1.default.JAR_PACKAGE_NAME);
 const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
 const outputPath = core.getInput(constants_1.default.OUTPUT_PATH);
 const repoName = github.context.repo.repo;
 const dottedArtifact = repoName.replace(/-/g, ".");
 const firstArtifact = dottedArtifact.split(".")[0];
+const artifactId = jarArtifactId !== null && jarArtifactId !== void 0 ? jarArtifactId : repoName.replace(/-/g, "_");
+const groupID = jarArtifactGroupId !== null && jarArtifactGroupId !== void 0 ? jarArtifactGroupId : `de.${firstArtifact}`;
+const packageName = jarArtifactPackageName !== null && jarArtifactPackageName !== void 0 ? jarArtifactPackageName : `de.${dottedArtifact}`;
 class DeployService {
     static getYML() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -160,7 +166,19 @@ class DeployService {
             core.notice("Repository name: " + repoName);
             core.notice("OpenAPI file path: " + openApiPath);
             core.notice("OpenAPI version: " + version);
-            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}`);
+            yield (0, syncToAsync_1.execute)(`
+      npx @openapitools/openapi-generator-cli generate 
+      -i ${openApiPath} 
+      -g kotlin 
+      -o ${outputPath} 
+      --git-user-id ${ownerName} 
+      --git-repo-id ${repoName} 
+      --additional-properties=
+      artifactId=${artifactId},
+      artifactVersion=${version},
+      groupId=${groupID},
+      packageName=${packageName}
+      `.replace(/\s+/g, " "));
             core.notice(`Generated Kotlin Client code`);
             const gradleFile = yield fs.promises.readFile(`${outputPath}/build.gradle`, "utf8");
             const newGradleFile = gradleFile.replace("apply plugin: 'kotlin'", constants_1.default.GRADLE_PLUGINS(ownerName, repoName, githubToken));
@@ -171,7 +189,7 @@ class DeployService {
             core.notice(`Deployed to GitHub Packages`);
         });
     }
-    static handleKotlinSpring() {
+    static handleSpring() {
         return __awaiter(this, void 0, void 0, function* () {
             const ymlFile = yield fs.promises.readFile(openApiPath, "utf8");
             const yml = js_yaml_1.default.load(ymlFile);
@@ -179,8 +197,38 @@ class DeployService {
             core.notice("Repository name: " + repoName);
             core.notice("OpenAPI file path: " + openApiPath);
             core.notice("OpenAPI version: " + version);
-            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=apiPackage=de.${dottedArtifact},artifactId=${repoName},basePackage=de.${firstArtifact},artifactVersion=${version},packageName=de.${firstArtifact},title=${repoName}`);
-            core.notice(`Generated Kotlin Spring code`);
+            core.notice("Generating Spring code");
+            core.notice(`artifactId=${artifactId},`);
+            core.notice(`artifactVersion=${version},`);
+            core.notice(`groupId=${groupID},`);
+            core.notice(`packageName=${packageName}`);
+            core.notice(`
+    npx @openapitools/openapi-generator-cli generate 
+    -i ${openApiPath} 
+    -g spring 
+    -o ${outputPath} 
+    --git-user-id ${ownerName} 
+    --git-repo-id ${repoName} 
+    --additional-properties=
+    artifactId=${artifactId},
+    artifactVersion=${version},
+    groupId=${groupID},
+    packageName=${packageName}
+    `.replace(/\s+/g, " "));
+            yield (0, syncToAsync_1.execute)(`
+      npx @openapitools/openapi-generator-cli generate 
+      -i ${openApiPath} 
+      -g spring 
+      -o ${outputPath} 
+      --git-user-id ${ownerName} 
+      --git-repo-id ${repoName} 
+      --additional-properties=
+      artifactId=${artifactId},
+      artifactVersion=${version},
+      groupId=${groupID},
+      packageName=${packageName}
+      `.replace(/\s+/g, " "));
+            core.notice(`Generated Spring code`);
             const pomFile = yield fs.promises.readFile(`${outputPath}/pom.xml`, "utf8");
             const newPomFile = pomFile
                 .replace("</project>", constants_1.default.POM_DISTRIBUTION(ownerName, repoName))
@@ -213,12 +261,15 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 class Constants {
 }
 exports["default"] = Constants;
-Constants.PLATFORMS = "PLATFORMS";
+Constants.PLATFORM = "PLATFORM";
 Constants.GITHUB_USERNAME = "GITHUB_USERNAME";
 Constants.GITHUB_TOKEN = "GITHUB_TOKEN";
 Constants.OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
 Constants.OUTPUT_PATH = "OUTPUT_PATH";
 Constants.NPM_TOKEN = "NPM_TOKEN";
+Constants.JAR_ARTIFACT_ID = "JAR_ARTIFACT_ID";
+Constants.JAR_GROUP_ID = "JAR_GROUP_ID";
+Constants.JAR_PACKAGE_NAME = "JAR_PACKAGE_NAME";
 Constants.GRADLE_PLUGINS = (owner, repoName, githubToken) => `
 apply plugin: 'kotlin'
 apply plugin: 'maven-publish'

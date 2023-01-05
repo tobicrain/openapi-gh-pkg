@@ -8,6 +8,9 @@ import * as github from "@actions/github";
 const ownerName = github.context.repo.owner as string;
 const githubToken = core.getInput(Constants.GITHUB_TOKEN);
 const npmToken = core.getInput(Constants.NPM_TOKEN);
+const jarArtifactId = core.getInput(Constants.JAR_ARTIFACT_ID);
+const jarArtifactGroupId = core.getInput(Constants.JAR_GROUP_ID);
+const jarArtifactPackageName = core.getInput(Constants.JAR_PACKAGE_NAME);
 
 const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
 const outputPath = core.getInput(Constants.OUTPUT_PATH);
@@ -16,6 +19,10 @@ const repoName = github.context.repo.repo as string;
 
 const dottedArtifact = repoName.replace(/-/g, ".");
 const firstArtifact = dottedArtifact.split(".")[0];
+
+const artifactId = jarArtifactId ?? repoName.replace(/-/g, "_");
+const groupID = jarArtifactGroupId ?? `de.${firstArtifact}`
+const packageName = jarArtifactPackageName ?? `de.${dottedArtifact}`
 
 export default class DeployService {
 
@@ -68,7 +75,19 @@ export default class DeployService {
     core.notice("OpenAPI version: " + version);
 
     await execute(
-      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${repoName},artifactVersion=${version},groupId=de.${firstArtifact},packageName=de.${dottedArtifact}` 
+      `
+      npx @openapitools/openapi-generator-cli generate 
+      -i ${openApiPath} 
+      -g kotlin 
+      -o ${outputPath} 
+      --git-user-id ${ownerName} 
+      --git-repo-id ${repoName} 
+      --additional-properties=
+      artifactId=${artifactId},
+      artifactVersion=${version},
+      groupId=${groupID},
+      packageName=${packageName}
+      `.replace(/\s+/g, " ")
     );
 
     core.notice(`Generated Kotlin Client code`);
@@ -94,7 +113,7 @@ export default class DeployService {
     core.notice(`Deployed to GitHub Packages`);
   }
 
-  static async handleKotlinSpring() {
+  static async handleSpring() {
     const ymlFile = await fs.promises.readFile(openApiPath, "utf8");
     const yml: any = yaml.load(ymlFile);
 
@@ -104,11 +123,41 @@ export default class DeployService {
     core.notice("OpenAPI file path: " + openApiPath);
     core.notice("OpenAPI version: " + version);
 
+    core.notice("Generating Spring code");
+    core.notice(`artifactId=${artifactId},`)
+    core.notice(`artifactVersion=${version},`)
+    core.notice(`groupId=${groupID},`)
+    core.notice(`packageName=${packageName}`)
+    core.notice(`
+    npx @openapitools/openapi-generator-cli generate 
+    -i ${openApiPath} 
+    -g spring 
+    -o ${outputPath} 
+    --git-user-id ${ownerName} 
+    --git-repo-id ${repoName} 
+    --additional-properties=
+    artifactId=${artifactId},
+    artifactVersion=${version},
+    groupId=${groupID},
+    packageName=${packageName}
+    `.replace(/\s+/g, " "))
     await execute(
-      `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=apiPackage=de.${dottedArtifact},artifactId=${repoName},basePackage=de.${firstArtifact},artifactVersion=${version},packageName=de.${firstArtifact},title=${repoName}`
+      `
+      npx @openapitools/openapi-generator-cli generate 
+      -i ${openApiPath} 
+      -g spring 
+      -o ${outputPath} 
+      --git-user-id ${ownerName} 
+      --git-repo-id ${repoName} 
+      --additional-properties=
+      artifactId=${artifactId},
+      artifactVersion=${version},
+      groupId=${groupID},
+      packageName=${packageName}
+      `.replace(/\s+/g, " ")
     );
 
-    core.notice(`Generated Kotlin Spring code`);
+    core.notice(`Generated Spring code`);
 
     const pomFile = await fs.promises.readFile(`${outputPath}/pom.xml`, "utf8");
 
