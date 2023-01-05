@@ -20,9 +20,9 @@ const repoName = github.context.repo.repo as string;
 const dottedArtifact = repoName.replace(/-/g, ".");
 const firstArtifact = dottedArtifact.split(".")[0];
 
-const artifactId = jarArtifactId ?? repoName.replace(/-/g, "_");
-const groupID = jarArtifactGroupId ?? `de.${firstArtifact}`
-const packageName = jarArtifactPackageName ?? `de.${dottedArtifact}`
+const artifactId = jarArtifactId != "" ? jarArtifactId: repoName.replace(/-/g, "_");
+const groupID = jarArtifactGroupId != "" ? jarArtifactGroupId : `de.${firstArtifact}`
+const packageName = jarArtifactPackageName != "" ? jarArtifactPackageName: `de.${dottedArtifact}`
 
 export default class DeployService {
 
