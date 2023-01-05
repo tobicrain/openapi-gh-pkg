@@ -111,12 +111,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const fs = __importStar(__nccwpck_require__(7147));
 const constants_1 = __importDefault(__nccwpck_require__(4434));
-const js_yaml_1 = __importDefault(__nccwpck_require__(1917));
-const syncToAsync_1 = __nccwpck_require__(4751);
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
+const FileService_1 = __nccwpck_require__(6065);
+const OpenApiService_1 = __nccwpck_require__(2446);
+const NpmService_1 = __nccwpck_require__(1661);
+const GradleService_1 = __nccwpck_require__(7719);
+const PomService_1 = __nccwpck_require__(7272);
 const ownerName = github.context.repo.owner;
 const githubToken = core.getInput(constants_1.default.GITHUB_TOKEN);
 const npmToken = core.getInput(constants_1.default.NPM_TOKEN);
@@ -130,85 +132,347 @@ const firstArtifact = dottedArtifact.split(".")[0];
 const artifactId = jarArtifactId != "" ? jarArtifactId : repoName.replace(/-/g, "_");
 const groupID = jarArtifactGroupId != "" ? jarArtifactGroupId : `com.${ownerName}`;
 class DeployService {
-    static getYML() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const ymlFile = yield fs.promises.readFile(openApiPath, "utf8");
-            const yml = js_yaml_1.default.load(ymlFile);
-            return yml;
-        });
-    }
     static handleAngular() {
         return __awaiter(this, void 0, void 0, function* () {
-            const yml = yield this.getYML();
-            const version = yml.info.version;
-            core.notice("Repository name: " + repoName);
-            core.notice("OpenAPI file path: " + openApiPath);
-            core.notice("OpenAPI version: " + version);
-            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g typescript-angular -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=npmName=@${ownerName}/${repoName},npmRepository=https://npm.pkg.github.com/`);
+            const yml = yield FileService_1.FileService.readYML(openApiPath);
+            yield OpenApiService_1.OpenApiService.generate({
+                input: openApiPath,
+                output: outputPath,
+                generator: "typescript-angular",
+                additionalProperties: [
+                    `npmName=@${ownerName}/${repoName}`,
+                    `npmRepository=https://npm.pkg.github.com/`,
+                ],
+                gitUserId: ownerName,
+                gitRepoId: repoName,
+            });
             core.notice(`Generated Angular code`);
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; npm install`);
-            core.notice(`npm Install`);
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; npm run build`);
-            core.notice(`npm run build`);
-            yield fs.promises.writeFile(`${outputPath}/dist/.npmrc`, `//npm.pkg.github.com/:_authToken=${npmToken}`, "utf8");
-            core.notice(`Created .npmrc`);
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}/dist; npm publish`);
-            core.notice(`npm publish`);
+            NpmService_1.NpmService.install(outputPath);
+            core.notice(`Installed npm packages`);
+            NpmService_1.NpmService.build(outputPath);
+            core.notice(`Built npm package`);
+            NpmService_1.NpmService.publish(outputPath, npmToken);
+            core.notice(`Published npm package`);
         });
     }
     static handleKotlinClient() {
         return __awaiter(this, void 0, void 0, function* () {
-            const ymlFile = yield fs.promises.readFile(openApiPath, "utf8");
-            const yml = js_yaml_1.default.load(ymlFile);
+            const yml = yield FileService_1.FileService.readYML(openApiPath);
             const version = yml.info.version;
-            core.notice("Repository name: " + repoName);
-            core.notice("OpenAPI file path: " + openApiPath);
-            core.notice("OpenAPI version: " + version);
-            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID}`);
+            yield OpenApiService_1.OpenApiService.generate({
+                input: openApiPath,
+                output: outputPath,
+                generator: "kotlin",
+                additionalProperties: [
+                    `artifactId=${artifactId}`,
+                    `artifactVersion=${version}`,
+                    `groupId=${groupID}`,
+                ],
+                gitUserId: ownerName,
+                gitRepoId: repoName,
+            });
             core.notice(`Generated Kotlin Client code`);
-            const gradleFile = yield fs.promises.readFile(`${outputPath}/build.gradle`, "utf8");
-            const newGradleFile = gradleFile.replace("apply plugin: 'kotlin'", constants_1.default.GRADLE_PLUGINS(ownerName, repoName, githubToken));
-            core.notice(`Modified build.gradle`);
-            yield fs.promises.writeFile(`${outputPath}/build.gradle`, newGradleFile, "utf8");
+            const gradleFile = yield FileService_1.FileService.read(`${outputPath}/build.gradle`);
+            const newGradleFile = GradleService_1.GradleService.applyPluginsAndPublishing(gradleFile, ownerName, githubToken, repoName);
+            yield FileService_1.FileService.write(`${outputPath}/build.gradle`, newGradleFile);
             core.notice(`Updated build.gradle`);
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; gradle publish`);
+            yield GradleService_1.GradleService.publish(outputPath);
             core.notice(`Deployed to GitHub Packages`);
         });
     }
     static handleSpring() {
         return __awaiter(this, void 0, void 0, function* () {
-            const ymlFile = yield fs.promises.readFile(openApiPath, "utf8");
-            const yml = js_yaml_1.default.load(ymlFile);
+            const yml = yield FileService_1.FileService.readYML(openApiPath);
             const version = yml.info.version;
-            core.notice("Repository name: " + repoName);
-            core.notice("OpenAPI file path: " + openApiPath);
-            core.notice("OpenAPI version: " + version);
-            core.notice("Generating Spring code");
-            core.notice(`artifactId=${artifactId},`);
-            core.notice(`artifactVersion=${version},`);
-            core.notice(`groupId=${groupID},`);
-            core.notice(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID}`);
-            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID}`);
+            yield OpenApiService_1.OpenApiService.generate({
+                input: openApiPath,
+                output: outputPath,
+                generator: "spring",
+                additionalProperties: [
+                    `artifactId=${artifactId}`,
+                    `artifactVersion=${version}`,
+                    `groupId=${groupID}`,
+                ],
+                gitUserId: ownerName,
+                gitRepoId: repoName,
+            });
             core.notice(`Generated Spring code`);
-            const pomFile = yield fs.promises.readFile(`${outputPath}/pom.xml`, "utf8");
-            const newPomFile = pomFile
-                .replace("</project>", constants_1.default.POM_DISTRIBUTION(ownerName, repoName))
-                .replace("</properties>", constants_1.default.POM_PROPERTIES);
-            core.notice(`Modified project and properties in pom.xml`);
-            yield fs.promises.writeFile(`${outputPath}/pom.xml`, newPomFile, "utf8");
+            const pomFile = yield FileService_1.FileService.read(`${outputPath}/pom.xml`);
+            const newPomFile = PomService_1.PomService.applyDistributionAndProperties(pomFile, ownerName, repoName);
+            yield FileService_1.FileService.write(`${outputPath}/pom.xml`, newPomFile);
             core.notice(`Updated pom.xml`);
-            yield (0, syncToAsync_1.execute)(`
-      mkdir ~/.m2;
-      touch ~/.m2/settings.xml;
-      echo '${constants_1.default.SETTINGS_XML(ownerName, githubToken)}' > ~/.m2/settings.xml;
-    `);
+            yield PomService_1.PomService.writeSettingsXmlFile(ownerName, githubToken);
             core.notice(`Created settings.xml`);
-            yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`);
+            yield PomService_1.PomService.publish(outputPath);
             core.notice(`Deployed to GitHub Packages`);
         });
     }
 }
 exports["default"] = DeployService;
+
+
+/***/ }),
+
+/***/ 6065:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FileService = void 0;
+const fs = __importStar(__nccwpck_require__(7147));
+const yaml = __importStar(__nccwpck_require__(1917));
+class FileService {
+    static read(path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const file = yield fs.promises.readFile(path, "utf8");
+            return file;
+        });
+    }
+    static readYML(path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const file = yield this.read(path);
+            return yaml.load(file);
+        });
+    }
+    static write(path, content) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield fs.promises.writeFile(path, content, "utf8");
+        });
+    }
+}
+exports.FileService = FileService;
+
+
+/***/ }),
+
+/***/ 7719:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GradleService = void 0;
+const syncToAsync_1 = __nccwpck_require__(4751);
+class GradleService {
+    static applyPluginsAndPublishing(gradleFile, owner, githubToken, repoName) {
+        const publishingConfig = `
+      publishing {
+          repositories {
+            maven {
+                name = "GitHubPackages"
+                url = "https://maven.pkg.github.com/${owner}/${repoName}"
+                credentials {
+                  username = "${owner}"
+                  password = "${githubToken}"
+                }
+            }
+          }
+          publications {
+              gpr(MavenPublication) {
+                  from(components.java)
+              }
+          } 
+      }`;
+        return gradleFile
+            .replace("plugins {", "plugins {\n    id 'kotlin'\n    id 'maven-publish'")
+            .replace("publishing {", publishingConfig);
+    }
+    static publish(outputPath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield (0, syncToAsync_1.execute)(`cd ${outputPath}; ./gradlew publish`);
+        });
+    }
+}
+exports.GradleService = GradleService;
+
+
+/***/ }),
+
+/***/ 1661:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NpmService = void 0;
+const fs = __importStar(__nccwpck_require__(7147));
+const syncToAsync_1 = __nccwpck_require__(4751);
+class NpmService {
+    static publish(path, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // create the .npmrc file
+            yield fs.promises.writeFile(`${path}/.npmrc`, `//npm.pkg.github.com/:_authToken=${token}`, "utf8");
+            // publish the package
+            return yield (0, syncToAsync_1.execute)(`cd ${path}; npm publish`);
+        });
+    }
+    static install(path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield (0, syncToAsync_1.execute)(`cd ${path}; npm install`);
+        });
+    }
+    static build(path) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield (0, syncToAsync_1.execute)(`cd ${path}; npm run build`);
+        });
+    }
+}
+exports.NpmService = NpmService;
+
+
+/***/ }),
+
+/***/ 2446:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OpenApiService = void 0;
+const syncToAsync_1 = __nccwpck_require__(4751);
+class OpenApiService {
+    static generate(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // build the command string
+            const command = `npx @openapitools/openapi-generator-cli generate -i ${options.input} -g ${options.generator} -o ${options.output} --git-user-id ${options.gitUserId} --git-repo-id ${options.gitRepoId} --additional-properties=${options.additionalProperties.join(",")}`;
+            // execute the command string
+            return yield (0, syncToAsync_1.execute)(command);
+        });
+    }
+}
+exports.OpenApiService = OpenApiService;
+
+
+/***/ }),
+
+/***/ 7272:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PomService = void 0;
+const constants_1 = __importDefault(__nccwpck_require__(4434));
+const syncToAsync_1 = __nccwpck_require__(4751);
+class PomService {
+    static applyDistributionAndProperties(pomFile, owner, repoName) {
+        const newPomFile = pomFile
+            .replace("</project>", constants_1.default.POM_DISTRIBUTION(owner, repoName))
+            .replace("</properties>", constants_1.default.POM_PROPERTIES);
+        return newPomFile;
+    }
+    static writeSettingsXmlFile(owner, githubToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const settingsXml = constants_1.default.SETTINGS_XML(owner, githubToken);
+            return yield (0, syncToAsync_1.execute)(`
+            mkdir ~/.m2;
+            touch ~/.m2/settings.xml;
+            echo '${settingsXml}' > ~/.m2/settings.xml;
+        `);
+        });
+    }
+    static publish(outputPath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield (0, syncToAsync_1.execute)(`cd ${outputPath}; mvn deploy --settings ~/.m2/settings.xml -DskipTests`);
+        });
+    }
+}
+exports.PomService = PomService;
 
 
 /***/ }),
