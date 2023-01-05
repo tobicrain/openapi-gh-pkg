@@ -14,9 +14,9 @@ export default class GithubService {
   }
 
   static async file(path: string) {
-    const GITHUB_TOKEN = core.getInput(Constants.GITHUB_TOKEN);
+    const DEPLOY_TOKEN = core.getInput(Constants.DEPLOY_TOKEN);
     const { data } = await github
-      .getOctokit(GITHUB_TOKEN)
+      .getOctokit(DEPLOY_TOKEN)
       .rest.repos.getContent({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,

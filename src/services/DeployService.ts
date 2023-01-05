@@ -8,8 +8,7 @@ import { GradleService } from "./GradleService";
 import { PomService } from "./PomService";
 
 const ownerName = github.context.repo.owner as string;
-// const deployToken = core.getInput(Constants.DEPLOY_TOKEN);
-const deployToken = process.env.GITHUB_TOKEN || (core.getInput('GITHUB_TOKEN', { required: true }));
+const deployToken = core.getInput(Constants.DEPLOY_TOKEN);
 
 const jarArtifactId = core.getInput(Constants.ARTIFACT_ID);
 const jarArtifactGroupId = core.getInput(Constants.GROUP_ID);
