@@ -122,7 +122,6 @@ const githubToken = core.getInput(constants_1.default.GITHUB_TOKEN);
 const npmToken = core.getInput(constants_1.default.NPM_TOKEN);
 const jarArtifactId = core.getInput(constants_1.default.JAR_ARTIFACT_ID);
 const jarArtifactGroupId = core.getInput(constants_1.default.JAR_GROUP_ID);
-const jarArtifactPackageName = core.getInput(constants_1.default.JAR_PACKAGE_NAME);
 const openApiPath = core.getInput(constants_1.default.OPEN_API_FILE_PATH);
 const outputPath = core.getInput(constants_1.default.OUTPUT_PATH);
 const repoName = github.context.repo.repo;
@@ -130,7 +129,6 @@ const dottedArtifact = repoName.replace(/-/g, ".");
 const firstArtifact = dottedArtifact.split(".")[0];
 const artifactId = jarArtifactId != "" ? jarArtifactId : repoName.replace(/-/g, "_");
 const groupID = jarArtifactGroupId != "" ? jarArtifactGroupId : `com.${ownerName}`;
-const packageName = jarArtifactPackageName != "" ? jarArtifactPackageName : `com.${dottedArtifact}`;
 class DeployService {
     static getYML() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -166,7 +164,7 @@ class DeployService {
             core.notice("Repository name: " + repoName);
             core.notice("OpenAPI file path: " + openApiPath);
             core.notice("OpenAPI version: " + version);
-            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID},packageName=${packageName}`);
+            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID}`);
             core.notice(`Generated Kotlin Client code`);
             const gradleFile = yield fs.promises.readFile(`${outputPath}/build.gradle`, "utf8");
             const newGradleFile = gradleFile.replace("apply plugin: 'kotlin'", constants_1.default.GRADLE_PLUGINS(ownerName, repoName, githubToken));
@@ -189,9 +187,8 @@ class DeployService {
             core.notice(`artifactId=${artifactId},`);
             core.notice(`artifactVersion=${version},`);
             core.notice(`groupId=${groupID},`);
-            core.notice(`packageName=${packageName}`);
-            core.notice(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID},packageName=${packageName}`);
-            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID},packageName=${packageName}`);
+            core.notice(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID}`);
+            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID}`);
             core.notice(`Generated Spring code`);
             const pomFile = yield fs.promises.readFile(`${outputPath}/pom.xml`, "utf8");
             const newPomFile = pomFile

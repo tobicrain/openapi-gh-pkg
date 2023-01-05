@@ -10,9 +10,6 @@ inputs:
   JAR_GROUP_ID:
     description: "Your desired group id"
     required: false
-  JAR_PACKAGE_NAME:
-    description: "Your desired package name"
-    required: false
   OPEN_API_FILE_PATH:
     description: "Path to openapi file"
     required: true

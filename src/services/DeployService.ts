@@ -10,7 +10,6 @@ const githubToken = core.getInput(Constants.GITHUB_TOKEN);
 const npmToken = core.getInput(Constants.NPM_TOKEN);
 const jarArtifactId = core.getInput(Constants.JAR_ARTIFACT_ID);
 const jarArtifactGroupId = core.getInput(Constants.JAR_GROUP_ID);
-const jarArtifactPackageName = core.getInput(Constants.JAR_PACKAGE_NAME);
 
 const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
 const outputPath = core.getInput(Constants.OUTPUT_PATH);
@@ -22,7 +21,6 @@ const firstArtifact = dottedArtifact.split(".")[0];
 
 const artifactId = jarArtifactId != "" ? jarArtifactId: repoName.replace(/-/g, "_");
 const groupID = jarArtifactGroupId != "" ? jarArtifactGroupId : `com.${ownerName}`
-const packageName = jarArtifactPackageName != "" ? jarArtifactPackageName: `com.${dottedArtifact}`
 
 export default class DeployService {
 
@@ -74,7 +72,7 @@ export default class DeployService {
     core.notice("OpenAPI file path: " + openApiPath);
     core.notice("OpenAPI version: " + version);
 
-    await execute(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID},packageName=${packageName}`);
+    await execute(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID}`);
 
     core.notice(`Generated Kotlin Client code`);
 
@@ -113,9 +111,8 @@ export default class DeployService {
     core.notice(`artifactId=${artifactId},`)
     core.notice(`artifactVersion=${version},`)
     core.notice(`groupId=${groupID},`)
-    core.notice(`packageName=${packageName}`)
-    core.notice(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID},packageName=${packageName}`)
-    await execute(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID},packageName=${packageName}`);
+    core.notice(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID}`)
+    await execute(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g spring -o ${outputPath} --git-user-id ${ownerName} --git-repo-id ${repoName} --additional-properties=artifactId=${artifactId},artifactVersion=${version},groupId=${groupID}`);
 
     core.notice(`Generated Spring code`);
 
