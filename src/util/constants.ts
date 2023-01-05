@@ -1,13 +1,10 @@
 export default class Constants {
   static readonly PLATFORM = "PLATFORM";
-  static readonly GITHUB_USERNAME = "GITHUB_USERNAME";
-  static readonly GITHUB_TOKEN = "GITHUB_TOKEN";
-  static readonly OPEN_API_FILE_PATH = "OPEN_API_FILE_PATH";
-  static readonly OUTPUT_PATH = "OUTPUT_PATH";
-  static readonly NPM_TOKEN = "NPM_TOKEN";
-  static readonly JAR_ARTIFACT_ID = "JAR_ARTIFACT_ID";
-  static readonly JAR_GROUP_ID = "JAR_GROUP_ID";
-  static readonly JAR_PACKAGE_NAME = "JAR_PACKAGE_NAME";
+  static readonly ARTIFACT_ID = "ARTIFACT_ID";
+  static readonly GROUP_ID = "GROUP_ID";
+  static readonly SCHEMA_FILE_PATH = "SCHEMA_FILE_PATH";
+  static readonly DEPLOY_TOKEN = "DEPLOY_TOKEN";
+
   static readonly GRADLE_PLUGINS = (
     owner: string,
     repoName: string,

@@ -11,38 +11,31 @@ import { GradleService } from "./GradleService";
 import { PomService } from "./PomService";
 
 const ownerName = github.context.repo.owner as string;
-const githubToken = core.getInput(Constants.GITHUB_TOKEN);
-const npmToken = core.getInput(Constants.NPM_TOKEN);
-const jarArtifactId = core.getInput(Constants.JAR_ARTIFACT_ID);
-const jarArtifactGroupId = core.getInput(Constants.JAR_GROUP_ID);
+const deployToken = core.getInput(Constants.DEPLOY_TOKEN);
 
-const openApiPath = core.getInput(Constants.OPEN_API_FILE_PATH);
-const outputPath = core.getInput(Constants.OUTPUT_PATH);
+const jarArtifactId = core.getInput(Constants.ARTIFACT_ID);
+const jarArtifactGroupId = core.getInput(Constants.GROUP_ID);
 
-const repoName = github.context.repo.repo as string;
+const openApiPath = core.getInput(Constants.SCHEMA_FILE_PATH);
+const outputPath = core.getInput(Constants.PLATFORM);
 
-const dottedArtifact = repoName.replace(/-/g, ".");
-const firstArtifact = dottedArtifact.split(".")[0];
-
-const artifactId = jarArtifactId != "" ? jarArtifactId: repoName.replace(/-/g, "_");
+const artifactId = jarArtifactId != "" ? jarArtifactId: github.context.repo.repo.replace(/-/g, "_");
 const groupID = jarArtifactGroupId != "" ? jarArtifactGroupId : `com.${ownerName}`
 
 export default class DeployService {
 
   static async handleAngular() {
-    
-    const yml: any = await FileService.readYML(openApiPath)
 
     await OpenApiService.generate({
       input: openApiPath,
       output: outputPath,
       generator: "typescript-angular",
       additionalProperties: [
-        `npmName=@${ownerName}/${repoName}`,
+        `npmName=@${ownerName}/${github.context.repo.repo}`,
         `npmRepository=https://npm.pkg.github.com/`,
       ],
       gitUserId: ownerName,
-      gitRepoId: repoName,
+      gitRepoId: github.context.repo.repo,
     });
 
     core.notice(`Generated Angular code`);
@@ -53,7 +46,7 @@ export default class DeployService {
     NpmService.build(outputPath);
     core.notice(`Built npm package`);
 
-    NpmService.publish(outputPath, npmToken);
+    NpmService.publish(outputPath, deployToken);
     core.notice(`Published npm package`);
   }
 
@@ -73,7 +66,7 @@ export default class DeployService {
         `groupId=${groupID}`,
       ],
       gitUserId: ownerName,
-      gitRepoId: repoName,
+      gitRepoId: github.context.repo.repo,
     });
 
     core.notice(`Generated Kotlin Client code`);
@@ -83,8 +76,8 @@ export default class DeployService {
     const newGradleFile = GradleService.applyPluginsAndPublishing(
       gradleFile,
       ownerName,
-      githubToken,
-      repoName
+      deployToken,
+      github.context.repo.repo
     );
 
     await FileService.write(`${outputPath}/build.gradle`, newGradleFile);
@@ -110,7 +103,7 @@ export default class DeployService {
         `groupId=${groupID}`,
       ],
       gitUserId: ownerName,
-      gitRepoId: repoName,
+      gitRepoId: github.context.repo.repo,
     });
 
     core.notice(`Generated Spring code`);
@@ -120,14 +113,14 @@ export default class DeployService {
     const newPomFile = PomService.applyDistributionAndProperties(
       pomFile,
       ownerName,
-      repoName
+      github.context.repo.repo
     );
 
     await FileService.write(`${outputPath}/pom.xml`, newPomFile);
 
     core.notice(`Updated pom.xml`);
 
-    await PomService.writeSettingsXmlFile(ownerName, githubToken);
+    await PomService.writeSettingsXmlFile(ownerName, deployToken);
 
     core.notice(`Created settings.xml`);
 
