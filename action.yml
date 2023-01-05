@@ -1,22 +1,13 @@
 name: "Openapi Generator"
 description: "Generates some Libraries based of open api file"
 inputs:
-  PLATFORM:
-    description: "Your desired platform"
-    required: true
-  ARTIFACT_ID:
-    description: "Your desired artifact id"
-    required: false
-  GROUP_ID:
-    description: "Your desired group id"
-    required: false
   SCHEMA_FILE_PATH:
     description: "Path to openapi file"
     required: true
     default: "api.yml"
   DEPLOY_TOKEN:
     description: "Your deploy token"
-    required: false
+    required: true
 runs:
   using: node12
   main: "lib/main.js"

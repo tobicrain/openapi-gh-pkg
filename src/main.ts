@@ -3,6 +3,7 @@ import { OpenApiYML } from "./models/OpenApiYML";
 import { FileService } from "./service/FileService";
 import { Constants } from "./util/Constants";
 
+
 const schemaFilePath = core.getInput(Constants.SCHEMA_FILE_PATH);
 
 async function main() {
