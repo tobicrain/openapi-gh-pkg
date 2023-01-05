@@ -21,8 +21,8 @@ const dottedArtifact = repoName.replace(/-/g, ".");
 const firstArtifact = dottedArtifact.split(".")[0];
 
 const artifactId = jarArtifactId != "" ? jarArtifactId: repoName.replace(/-/g, "_");
-const groupID = jarArtifactGroupId != "" ? jarArtifactGroupId : `de.${firstArtifact}`
-const packageName = jarArtifactPackageName != "" ? jarArtifactPackageName: `de.${dottedArtifact}`
+const groupID = jarArtifactGroupId != "" ? jarArtifactGroupId : `com.${ownerName}`
+const packageName = jarArtifactPackageName != "" ? jarArtifactPackageName: `com.${dottedArtifact}`
 
 export default class DeployService {
 
