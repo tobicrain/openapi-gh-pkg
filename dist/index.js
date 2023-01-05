@@ -126,10 +126,16 @@ const repoName = github.context.repo.repo;
 const dottedArtifact = repoName.replace(/-/g, ".");
 const firstArtifact = dottedArtifact.split(".")[0];
 class DeployService {
-    static handleAngular() {
+    static getYML() {
         return __awaiter(this, void 0, void 0, function* () {
             const ymlFile = yield fs.promises.readFile(openApiPath, "utf8");
             const yml = js_yaml_1.default.load(ymlFile);
+            return yml;
+        });
+    }
+    static handleAngular() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const yml = yield this.getYML();
             const version = yml.info.version;
             core.notice("Repository name: " + repoName);
             core.notice("OpenAPI file path: " + openApiPath);
@@ -173,7 +179,7 @@ class DeployService {
             core.notice("Repository name: " + repoName);
             core.notice("OpenAPI file path: " + openApiPath);
             core.notice("OpenAPI version: " + version);
-            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=interfaceOnly=true,apiPackage=de.${dottedArtifact},artifactId=${repoName},basePackage=de.${firstArtifact},artifactVersion=${version},packageName=de.${firstArtifact},title=${repoName}`);
+            yield (0, syncToAsync_1.execute)(`npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifact},artifactId=${repoName},basePackage=de.${firstArtifact},artifactVersion=${version},packageName=de.${firstArtifact},title=${repoName}`);
             core.notice(`Generated Kotlin Spring code`);
             const pomFile = yield fs.promises.readFile(`${outputPath}/pom.xml`, "utf8");
             const newPomFile = pomFile

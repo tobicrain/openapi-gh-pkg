@@ -107,6 +107,7 @@ export default class DeployService {
     await execute(
       `npx @openapitools/openapi-generator-cli generate -i ${openApiPath} -g kotlin-spring -o ${outputPath} --git-user-id "${ownerName}" --git-repo-id "${repoName}" --additional-properties=delegatePattern=true,apiPackage=de.${dottedArtifact},artifactId=${repoName},basePackage=de.${firstArtifact},artifactVersion=${version},packageName=de.${firstArtifact},title=${repoName}`
     );
+    
     core.notice(`Generated Kotlin Spring code`);
 
     const pomFile = await fs.promises.readFile(`${outputPath}/pom.xml`, "utf8");
