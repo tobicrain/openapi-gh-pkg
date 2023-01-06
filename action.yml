@@ -1,5 +1,8 @@
-name: "Openapi Generator"
-description: "Generates some Libraries based of open api file"
+name: "OpenAPI for GitHub Packages"
+description: "Generates and publishes libraries based on an open API file to GitHub packages."
+branding:
+  icon: 'box'
+  color: 'gray-dark'
 inputs:
   SCHEMA_FILE_PATH:
     description: "Path to openapi file"
