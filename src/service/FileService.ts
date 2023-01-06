@@ -1,5 +1,6 @@
 import * as fs from "fs";
-const YAML = require('yaml')
+const YAML = require('yamljs');
+
 
 export class FileService {
     static async read(path: string): Promise<string> {
@@ -9,7 +10,8 @@ export class FileService {
 
     static async readYML<T>(path: string): Promise<T> {
         const file = await this.read(path);
-        return YAML.parse(file) as T
+        const nativeObject = YAML.parse(file);
+        return nativeObject as T;
     }
 
     static async write(path: string, content: string): Promise<void> {
