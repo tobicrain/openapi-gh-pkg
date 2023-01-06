@@ -10,6 +10,8 @@ const schemaFilePath = core.getInput(Constants.SCHEMA_FILE_PATH);
 
 async function main() {
 
+    core.notice(schemaFilePath)
+    core.notice(core.getInput("SCHEMA_FILE_PATH"))
     const schemaFile = await FileService.readYML<OpenApiYML>(schemaFilePath);
     const deploymentNames = Object.keys(schemaFile["x-deploy"])
     const deploymentValues = Object.values(schemaFile["x-deploy"])
