@@ -61,7 +61,8 @@ function main() {
             switch (deploymentName) {
                 case "kotlin":
                     core.notice(`Found Kotlin deployment`);
-                    core.notice(JSON.stringify(deployment));
+                    console.log(deployment);
+                    console.log(JSON.stringify(deployment));
                     const kotlinDeployment = deployment;
                     core.notice(`Kotlin package artifact: ${kotlinDeployment.artifact}`);
                     core.notice(`Kotlin package group: ${kotlinDeployment.group}`);
