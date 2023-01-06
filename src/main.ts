@@ -48,4 +48,10 @@ async function main() {
     
 }
 
-main();
+main()
+.then(() => {
+    core.notice("Deployment complete");
+})
+.catch(error => {
+    core.setFailed(error.message);
+})
