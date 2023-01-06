@@ -6,13 +6,12 @@ import SpringPublisher from "./publisher/SpringPublisher";
 import { FileService } from "./service/FileService";
 import Constants from "./utils/Constants";
 
-const schemaFilePath = core.getInput(Constants.SCHEMA_FILE_PATH);
 
 async function main() {
 
-    core.notice(schemaFilePath)
-    // core.notice(core.getInput("SCHEMA_FILE_PATH"))
-    const schemaFile = await FileService.readYML<OpenApiYML>(schemaFilePath);
+    core.notice(Constants.SCHEMA_FILE_PATH)
+
+    const schemaFile = await FileService.readYML<OpenApiYML>(Constants.SCHEMA_FILE_PATH);
     const deploymentNames = Object.keys(schemaFile["x-deploy"])
     const deploymentValues = Object.values(schemaFile["x-deploy"])
 

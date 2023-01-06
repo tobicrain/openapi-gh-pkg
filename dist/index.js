@@ -48,12 +48,10 @@ const KotlinPublisher_1 = __importDefault(__nccwpck_require__(4669));
 const SpringPublisher_1 = __importDefault(__nccwpck_require__(9735));
 const FileService_1 = __nccwpck_require__(5955);
 const Constants_1 = __importDefault(__nccwpck_require__(793));
-const schemaFilePath = core.getInput(Constants_1.default.SCHEMA_FILE_PATH);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        core.notice(schemaFilePath);
-        // core.notice(core.getInput("SCHEMA_FILE_PATH"))
-        const schemaFile = yield FileService_1.FileService.readYML(schemaFilePath);
+        core.notice(Constants_1.default.SCHEMA_FILE_PATH);
+        const schemaFile = yield FileService_1.FileService.readYML(Constants_1.default.SCHEMA_FILE_PATH);
         const deploymentNames = Object.keys(schemaFile["x-deploy"]);
         const deploymentValues = Object.values(schemaFile["x-deploy"]);
         core.notice(`Found ${deploymentNames.length} deployments`);
