@@ -567,7 +567,6 @@ function execute(command) {
         return yield new Promise(function (resolve, reject) {
             (0, child_process_1.exec)(command, (err, stdout, stderr) => {
                 if (err) {
-                    console.error(err);
                     reject(err);
                 }
                 resolve(stdout);
