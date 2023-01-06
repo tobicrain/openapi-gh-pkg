@@ -23,8 +23,9 @@ async function main() {
         switch (deploymentName) {
             case "kotlin":
                 core.notice(`Found Kotlin deployment`);
-                const kotlinDeployment = deployment as JARDeployment
                 core.notice(JSON.stringify(deployment))
+                const kotlinDeployment = deployment as JARDeployment
+                
                 core.notice(`Kotlin package artifact: ${kotlinDeployment.artifact}`);
                 core.notice(`Kotlin package group: ${kotlinDeployment.group}`);
                 KotlinPublisher.publish(kotlinDeployment.artifact, kotlinDeployment.group, schemaFile.info.version);
