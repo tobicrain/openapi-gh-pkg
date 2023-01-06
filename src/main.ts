@@ -1,5 +1,8 @@
 import * as core from "@actions/core";
-import { OpenApiYML } from "./models/OpenApiYML";
+import { JARDeployment, NPMDeployment, OpenApiYML } from "./models/OpenApiYML";
+import AngularTypescriptPublisher from "./publisher/AngularPublisher";
+import KotlinPublisher from "./publisher/KotlinPublisher";
+import SpringPublisher from "./publisher/SpringPublisher";
 import { FileService } from "./service/FileService";
 import Constants from "./utils/Constants";
 
@@ -9,7 +12,7 @@ async function main() {
 
     const schemaFile = await FileService.readYML<OpenApiYML>(schemaFilePath);
     const deploymentNames = Object.keys(schemaFile["x-deploy"])
-    const deploymentValues = Object.keys(schemaFile["x-deploy"])
+    const deploymentValues = Object.values(schemaFile["x-deploy"])
 
     core.notice(`Found ${deploymentNames.length} deployments`);
     core.notice(`Deployments: ${deploymentNames.join(", ")}`);
@@ -19,12 +22,23 @@ async function main() {
         switch (deploymentName) {
             case "kotlin":
                 core.notice(`Found Kotlin deployment`);
+                const kotlinDeployment = deployment as JARDeployment
+                core.notice(`Kotlin package artifact: ${kotlinDeployment.artifact}`);
+                core.notice(`Kotlin package group: ${kotlinDeployment.group}`);
+                KotlinPublisher.publish(kotlinDeployment.artifact, kotlinDeployment.group, schemaFile.info.version);
                 break;
             case "spring":
                 core.notice(`Found Spring deployment`);
+                const springDeployment = deployment as JARDeployment;
+                core.notice(`Spring package artifact: ${springDeployment.artifact}`);
+                core.notice(`Spring package group: ${springDeployment.group}`);
+                SpringPublisher.publish(springDeployment.artifact, springDeployment.group, schemaFile.info.version);
                 break;
             case "typescript-angular":
                 core.notice(`Found TypeScript Angular deployment`);
+                const typescriptAngularDeployment = deployment as NPMDeployment;
+                core.notice(`TypeScript Angular package name: ${typescriptAngularDeployment.name}`);
+                AngularTypescriptPublisher.publish(typescriptAngularDeployment.name, schemaFile.info.version);
                 break;
             default:
                 core.error(`Unknown deployment: ${deploymentName}`);
