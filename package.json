@@ -14,15 +14,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tandamo/openapi-generator.git"
+    "url": "git+https://github.com/tobicrain/openapi-generator.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tandamo/openapi-generator/issues"
+    "url": "https://github.com/tobicrain/openapi-generator/issues"
   },
-  "homepage": "https://github.com/tandamo/openapi-generator#readme",
+  "homepage": "https://github.com/tobicrain/openapi-generator#readme",
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",
