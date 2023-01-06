@@ -23,7 +23,7 @@ export default class AngularTypescriptPublisher {
         AngularTypescriptPublisher.installCommand();
         core.notice(`Installed npm packages`);
     
-        AngularTypescriptPublisher.buildCommand();
+        AngularTypescriptPublisher.buildCommand().catch(error => {});
         core.notice(`Built npm package`);
     
         AngularTypescriptPublisher.publishCommand();
@@ -37,7 +37,7 @@ export default class AngularTypescriptPublisher {
     }
 
     static async installCommand(): Promise<string> {
-        return await execute(`cd ${Constants.DEPLOYMENT_TYPESCRIPT_ANGULAR}; npm install ng-packagr; npm install`);
+        return await execute(`cd ${Constants.DEPLOYMENT_TYPESCRIPT_ANGULAR}; npm install`);
     }
 
     static async buildCommand(): Promise<string> {

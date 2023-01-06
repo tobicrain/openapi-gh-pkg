@@ -160,7 +160,7 @@ class AngularTypescriptPublisher {
             core.notice(`${Constants_1.default.DEPLOYMENT_TYPESCRIPT_ANGULAR} Creation complete`);
             AngularTypescriptPublisher.installCommand();
             core.notice(`Installed npm packages`);
-            AngularTypescriptPublisher.buildCommand();
+            AngularTypescriptPublisher.buildCommand().catch(error => { });
             core.notice(`Built npm package`);
             AngularTypescriptPublisher.publishCommand();
             core.notice(`Published npm package`);
@@ -174,7 +174,7 @@ class AngularTypescriptPublisher {
     }
     static installCommand() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield (0, execute_1.execute)(`cd ${Constants_1.default.DEPLOYMENT_TYPESCRIPT_ANGULAR}; npm install ng-packagr; npm install`);
+            return yield (0, execute_1.execute)(`cd ${Constants_1.default.DEPLOYMENT_TYPESCRIPT_ANGULAR}; npm install`);
         });
     }
     static buildCommand() {
