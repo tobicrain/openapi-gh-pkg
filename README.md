@@ -12,7 +12,7 @@ To use OpenAPI for GitHub Packages, you will need to provide the path to your op
 steps:
   - uses: actions/checkout@v2
   - name: OpenAPI Generator
-    uses: tandamo/openapi-gh-pkg@main
+    uses: tobicrain/openapi-gh-pkg@main
     with:
       SCHEMA_FILE_PATH: api.yaml
       DEPLOY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
