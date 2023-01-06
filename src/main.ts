@@ -18,31 +18,29 @@ async function main() {
     core.notice(`Found ${deploymentNames.length} deployments`);
     core.notice(`Deployments: ${deploymentNames.join(", ")}`);
 
-    deploymentNames.forEach(deploymentName => {
-        const deployment = deploymentValues[deploymentName];
+    deploymentNames.forEach(async deploymentName => {
         switch (deploymentName) {
             case "kotlin":
                 core.notice(`Found Kotlin deployment`);
 
                 const kotlinDeployment = schemaFile["x-deploy"].kotlin as JARDeployment
-                console.log(kotlinDeployment)
-                
+
                 core.notice(`Kotlin package artifact: ${kotlinDeployment.artifact}`);
                 core.notice(`Kotlin package group: ${kotlinDeployment.group}`);
-                KotlinPublisher.publish(kotlinDeployment.artifact, kotlinDeployment.group, schemaFile.info.version);
+                await KotlinPublisher.publish(kotlinDeployment.artifact, kotlinDeployment.group, schemaFile.info.version);
                 break;
             case "spring":
                 core.notice(`Found Spring deployment`);
-                const springDeployment = deployment as JARDeployment;
+                const springDeployment = schemaFile["x-deploy"].spring as JARDeployment
                 core.notice(`Spring package artifact: ${springDeployment.artifact}`);
                 core.notice(`Spring package group: ${springDeployment.group}`);
-                SpringPublisher.publish(springDeployment.artifact, springDeployment.group, schemaFile.info.version);
+                await SpringPublisher.publish(springDeployment.artifact, springDeployment.group, schemaFile.info.version);
                 break;
             case "typescript-angular":
                 core.notice(`Found TypeScript Angular deployment`);
-                const typescriptAngularDeployment = deployment as NPMDeployment;
+                const typescriptAngularDeployment = schemaFile["x-deploy"]["typescript-angular"] as NPMDeployment
                 core.notice(`TypeScript Angular package name: ${typescriptAngularDeployment.name}`);
-                AngularTypescriptPublisher.publish(typescriptAngularDeployment.name, schemaFile.info.version);
+                await AngularTypescriptPublisher.publish(typescriptAngularDeployment.name, schemaFile.info.version);
                 break;
             default:
                 core.error(`Unknown deployment: ${deploymentName}`);
