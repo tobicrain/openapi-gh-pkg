@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { parse, stringify } from 'yaml'
+const YAML = require('yaml')
 
 export class FileService {
     static async read(path: string): Promise<string> {
@@ -9,7 +9,7 @@ export class FileService {
 
     static async readYML<T>(path: string): Promise<T> {
         const file = await this.read(path);
-        return parse(file) as T
+        return YAML.parse(file) as T
     }
 
     static async write(path: string, content: string): Promise<void> {

@@ -403,7 +403,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FileService = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
-const yaml_1 = __nccwpck_require__(4083);
+const YAML = __nccwpck_require__(4083);
 class FileService {
     static read(path) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -414,7 +414,7 @@ class FileService {
     static readYML(path) {
         return __awaiter(this, void 0, void 0, function* () {
             const file = yield this.read(path);
-            return (0, yaml_1.parse)(file);
+            return YAML.parse(file);
         });
     }
     static write(path, content) {
