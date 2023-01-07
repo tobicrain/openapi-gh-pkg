@@ -76,7 +76,7 @@ function main() {
                     core.notice(`Found TypeScript Angular deployment`);
                     const typescriptAngularDeployment = schemaFile["x-deploy"]["typescript-angular"];
                     core.notice(`TypeScript Angular package name: ${typescriptAngularDeployment.name}`);
-                    yield AngularPublisher_1.default.publish(typescriptAngularDeployment.name, schemaFile.info.version);
+                    yield AngularPublisher_1.default.publish(typescriptAngularDeployment.name);
                     break;
                 default:
                     core.error(`Unknown deployment: ${deploymentName}`);
@@ -144,7 +144,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const FileService_1 = __nccwpck_require__(5955);
 const execute_1 = __nccwpck_require__(8986);
 class AngularTypescriptPublisher {
-    static publish(name, version) {
+    static publish(name) {
         return __awaiter(this, void 0, void 0, function* () {
             yield OpenApiGenerator_1.default.generate({
                 input: Constants_1.default.SCHEMA_FILE_PATH,
@@ -160,7 +160,7 @@ class AngularTypescriptPublisher {
             core.notice(`${Constants_1.default.DEPLOYMENT_TYPESCRIPT_ANGULAR} Creation complete`);
             AngularTypescriptPublisher.installCommand();
             core.notice(`Installed npm packages`);
-            AngularTypescriptPublisher.buildCommand().catch(error => { });
+            AngularTypescriptPublisher.buildCommand();
             core.notice(`Built npm package`);
             AngularTypescriptPublisher.publishCommand();
             core.notice(`Published npm package`);

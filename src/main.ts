@@ -40,7 +40,7 @@ async function main() {
                 core.notice(`Found TypeScript Angular deployment`);
                 const typescriptAngularDeployment = schemaFile["x-deploy"]["typescript-angular"] as NPMDeployment
                 core.notice(`TypeScript Angular package name: ${typescriptAngularDeployment.name}`);
-                await AngularTypescriptPublisher.publish(typescriptAngularDeployment.name, schemaFile.info.version);
+                await AngularTypescriptPublisher.publish(typescriptAngularDeployment.name);
                 break;
             default:
                 core.error(`Unknown deployment: ${deploymentName}`);

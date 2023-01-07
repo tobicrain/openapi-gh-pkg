@@ -6,7 +6,7 @@ import { FileService } from "../service/FileService";
 import { execute } from "../utils/execute";
 
 export default class AngularTypescriptPublisher {
-    static async publish(name: string, version: string) {
+    static async publish(name: string) {
         await OpenApiGenerator.generate({
             input: Constants.SCHEMA_FILE_PATH,
             output: Constants.DEPLOYMENT_TYPESCRIPT_ANGULAR,
@@ -23,7 +23,7 @@ export default class AngularTypescriptPublisher {
         AngularTypescriptPublisher.installCommand();
         core.notice(`Installed npm packages`);
     
-        AngularTypescriptPublisher.buildCommand().catch(error => {});
+        AngularTypescriptPublisher.buildCommand();
         core.notice(`Built npm package`);
     
         AngularTypescriptPublisher.publishCommand();
