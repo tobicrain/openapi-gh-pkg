@@ -20,13 +20,13 @@ export default class AngularTypescriptPublisher {
         });
         core.notice(`${Constants.DEPLOYMENT_TYPESCRIPT_ANGULAR} Creation complete`);
 
-        AngularTypescriptPublisher.installCommand();
+        await AngularTypescriptPublisher.installCommand();
         core.notice(`Installed npm packages`);
     
-        AngularTypescriptPublisher.buildCommand();
+        await AngularTypescriptPublisher.buildCommand();
         core.notice(`Built npm package`);
     
-        AngularTypescriptPublisher.publishCommand();
+        await AngularTypescriptPublisher.publishCommand();
         core.notice(`Published npm package`);
 
     }

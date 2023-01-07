@@ -158,11 +158,11 @@ class AngularTypescriptPublisher {
                 gitRepoId: github.context.repo.repo,
             });
             core.notice(`${Constants_1.default.DEPLOYMENT_TYPESCRIPT_ANGULAR} Creation complete`);
-            AngularTypescriptPublisher.installCommand();
+            yield AngularTypescriptPublisher.installCommand();
             core.notice(`Installed npm packages`);
-            AngularTypescriptPublisher.buildCommand();
+            yield AngularTypescriptPublisher.buildCommand();
             core.notice(`Built npm package`);
-            AngularTypescriptPublisher.publishCommand();
+            yield AngularTypescriptPublisher.publishCommand();
             core.notice(`Published npm package`);
         });
     }
