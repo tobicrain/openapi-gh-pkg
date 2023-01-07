@@ -265,7 +265,7 @@ class JavaPublisher {
             });
             core.notice(`${Constants_1.default.DEPLOYMENT_JAVA} Creation complete`);
             var gradle = yield FileService_1.FileService.read(Constants_1.default.DEPLOYMENT_JAVA + "/build.gradle");
-            gradle = gradle.replace("apply plugin: 'eclipse'", Constants_1.default.GRADLE_PLUGINS('eclipse', github.context.repo.owner, github.context.repo.repo, Constants_1.default.DEPLOY_TOKEN));
+            gradle = gradle.replace("apply plugin: 'eclipse'", Constants_1.default.GRADLE_PLUGINS(github.context.repo.owner, github.context.repo.repo, Constants_1.default.DEPLOY_TOKEN));
             yield FileService_1.FileService.write(Constants_1.default.DEPLOYMENT_JAVA + "/build.gradle", gradle);
             core.notice(`${Constants_1.default.DEPLOYMENT_JAVA} Gradle file updated`);
             yield JavaPublisher.publishCommand(Constants_1.default.DEPLOYMENT_JAVA);
@@ -347,7 +347,17 @@ class KotlinPublisher {
             });
             core.notice(`${Constants_1.default.DEPLOYMENT_KOTLIN} Creation complete`);
             var gradle = yield FileService_1.FileService.read(Constants_1.default.DEPLOYMENT_KOTLIN + "/build.gradle");
-            gradle = gradle.replace("apply plugin: 'kotlin'", Constants_1.default.GRADLE_PLUGINS('kotlin', github.context.repo.owner, github.context.repo.repo, Constants_1.default.DEPLOY_TOKEN));
+            gradle = gradle.replace("publishing {", `publishing {
+                repositories {
+                    maven {
+                        name = "GitHubPackages"
+                        url = "https://maven.pkg.github.com/${github.context.repo.owner}/${github.context.repo.repo}"
+                        credentials {
+                        username = "${github.context.repo.owner}"
+                        password = "${Constants_1.default.DEPLOY_TOKEN}"
+                        }
+                    }
+                }`);
             yield FileService_1.FileService.write(Constants_1.default.DEPLOYMENT_KOTLIN + "/build.gradle", gradle);
             core.notice(`${Constants_1.default.DEPLOYMENT_KOTLIN} Gradle file updated`);
             yield KotlinPublisher.publishCommand(Constants_1.default.DEPLOYMENT_KOTLIN);
@@ -618,8 +628,8 @@ Constants.DEPLOYMENT_KOTLIN = "kotlin";
 Constants.DEPLOYMENT_JAVA = "java";
 Constants.DEPLOYMENT_SPRING = "spring";
 Constants.DEPLOYMENT_TYPESCRIPT_ANGULAR = "typescript-angular";
-Constants.GRADLE_PLUGINS = (plugin, owner, repoName, githubToken) => `
-apply plugin: '${plugin}'
+Constants.GRADLE_PLUGINS = (owner, repoName, githubToken) => `
+apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
 
 publishing {

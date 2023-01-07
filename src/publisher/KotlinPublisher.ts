@@ -24,8 +24,18 @@ export default class KotlinPublisher {
         var gradle = await FileService.read(Constants.DEPLOYMENT_KOTLIN + "/build.gradle");
 
         gradle = gradle.replace(
-            "apply plugin: 'kotlin'",
-            Constants.GRADLE_PLUGINS('kotlin', github.context.repo.owner, github.context.repo.repo, Constants.DEPLOY_TOKEN)
+            "publishing {",
+            `publishing {
+                repositories {
+                    maven {
+                        name = "GitHubPackages"
+                        url = "https://maven.pkg.github.com/${github.context.repo.owner}/${github.context.repo.repo}"
+                        credentials {
+                        username = "${github.context.repo.owner}"
+                        password = "${Constants.DEPLOY_TOKEN}"
+                        }
+                    }
+                }`
         )
 
         await FileService.write(Constants.DEPLOYMENT_KOTLIN + "/build.gradle", gradle);

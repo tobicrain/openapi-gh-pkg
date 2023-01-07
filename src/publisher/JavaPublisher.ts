@@ -26,7 +26,7 @@ export default class JavaPublisher {
 
         gradle = gradle.replace(
             "apply plugin: 'eclipse'",
-            Constants.GRADLE_PLUGINS('eclipse', github.context.repo.owner, github.context.repo.repo, Constants.DEPLOY_TOKEN)
+            Constants.GRADLE_PLUGINS(github.context.repo.owner, github.context.repo.repo, Constants.DEPLOY_TOKEN)
         )
 
         await FileService.write(Constants.DEPLOYMENT_JAVA + "/build.gradle", gradle);

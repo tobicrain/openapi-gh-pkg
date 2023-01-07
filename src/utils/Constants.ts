@@ -13,12 +13,11 @@ export default class Constants {
     static readonly DEPLOYMENT_TYPESCRIPT_ANGULAR = "typescript-angular";
 
     static readonly GRADLE_PLUGINS = (
-        plugin: string,
         owner: string,
         repoName: string,
         githubToken: string
     ) => `
-apply plugin: '${plugin}'
+apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
 
 publishing {
