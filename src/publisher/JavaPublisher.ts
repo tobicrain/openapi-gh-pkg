@@ -25,8 +25,8 @@ export default class JavaPublisher {
         var gradle = await FileService.read(Constants.DEPLOYMENT_JAVA + "/build.gradle");
 
         gradle = gradle.replace(
-            "apply plugin: 'kotlin'",
-            Constants.GRADLE_PLUGINS(github.context.repo.owner, github.context.repo.repo, Constants.DEPLOY_TOKEN)
+            "apply plugin: 'eclipse'",
+            Constants.GRADLE_PLUGINS('eclipse', github.context.repo.owner, github.context.repo.repo, Constants.DEPLOY_TOKEN)
         )
 
         await FileService.write(Constants.DEPLOYMENT_JAVA + "/build.gradle", gradle);

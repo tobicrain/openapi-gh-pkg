@@ -25,7 +25,7 @@ export default class KotlinPublisher {
 
         gradle = gradle.replace(
             "apply plugin: 'kotlin'",
-            Constants.GRADLE_PLUGINS(github.context.repo.owner, github.context.repo.repo, Constants.DEPLOY_TOKEN)
+            Constants.GRADLE_PLUGINS('kotlin', github.context.repo.owner, github.context.repo.repo, Constants.DEPLOY_TOKEN)
         )
 
         await FileService.write(Constants.DEPLOYMENT_KOTLIN + "/build.gradle", gradle);
