@@ -5,6 +5,7 @@ import KotlinPublisher from "./publisher/KotlinPublisher";
 import SpringPublisher from "./publisher/SpringPublisher";
 import { FileService } from "./service/FileService";
 import Constants from "./utils/Constants";
+import { execute } from "./utils/execute";
 
 
 async function main() {
@@ -17,6 +18,10 @@ async function main() {
 
     core.notice(`Found ${deploymentNames.length} deployments`);
     core.notice(`Deployments: ${deploymentNames.join(", ")}`);
+
+    core.notice(`Installing OpenAPI Generator CLI`);
+    await execute('npm install @openapitools/openapi-generator-cli -g');
+
 
     deploymentNames.forEach(async deploymentName => {
         switch (deploymentName) {

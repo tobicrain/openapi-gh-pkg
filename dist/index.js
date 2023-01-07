@@ -48,6 +48,7 @@ const KotlinPublisher_1 = __importDefault(__nccwpck_require__(4669));
 const SpringPublisher_1 = __importDefault(__nccwpck_require__(9735));
 const FileService_1 = __nccwpck_require__(5955);
 const Constants_1 = __importDefault(__nccwpck_require__(793));
+const execute_1 = __nccwpck_require__(8986);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         core.notice(Constants_1.default.SCHEMA_FILE_PATH);
@@ -56,6 +57,8 @@ function main() {
         const deploymentValues = Object.values(schemaFile["x-deploy"]);
         core.notice(`Found ${deploymentNames.length} deployments`);
         core.notice(`Deployments: ${deploymentNames.join(", ")}`);
+        core.notice(`Installing OpenAPI Generator CLI`);
+        yield (0, execute_1.execute)('npm install @openapitools/openapi-generator-cli -g');
         deploymentNames.forEach((deploymentName) => __awaiter(this, void 0, void 0, function* () {
             switch (deploymentName) {
                 case "kotlin":
@@ -470,7 +473,7 @@ const core = __importStar(__nccwpck_require__(2186));
 class OpenApiGenerator {
     static generate(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const command = `npx @openapitools/openapi-generator-cli generate -i ${options.input} -g ${options.generator} -o ${options.output} --git-user-id ${options.gitUserId} --git-repo-id ${options.gitRepoId} --additional-properties=${options.additionalProperties.join(",")}`;
+            const command = `openapi-generator-cli generate -i ${options.input} -g ${options.generator} -o ${options.output} --git-user-id ${options.gitUserId} --git-repo-id ${options.gitRepoId} --additional-properties=${options.additionalProperties.join(",")}`;
             core.notice(command);
             console.log(command);
             return yield (0, execute_1.execute)(command);

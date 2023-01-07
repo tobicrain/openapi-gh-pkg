@@ -11,7 +11,7 @@ export default class OpenApiGenerator {
         gitUserId: string;
         gitRepoId: string;
     }): Promise<string> {
-        const command = `npx @openapitools/openapi-generator-cli generate -i ${options.input} -g ${options.generator} -o ${options.output} --git-user-id ${options.gitUserId} --git-repo-id ${options.gitRepoId} --additional-properties=${options.additionalProperties.join(",")}`;
+        const command = `openapi-generator-cli generate -i ${options.input} -g ${options.generator} -o ${options.output} --git-user-id ${options.gitUserId} --git-repo-id ${options.gitRepoId} --additional-properties=${options.additionalProperties.join(",")}`;
         core.notice(command);
         console.log(command)
         return await execute(command);
