@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
 import { JARDeployment, NPMDeployment, OpenApiYML } from "./models/OpenApiYML";
 import AngularTypescriptPublisher from "./publisher/AngularPublisher";
+import JavaPublisher from "./publisher/JavaPublisher";
 import KotlinPublisher from "./publisher/KotlinPublisher";
 import SpringPublisher from "./publisher/SpringPublisher";
 import { FileService } from "./service/FileService";
@@ -34,6 +35,15 @@ async function main() {
                 core.notice(`Kotlin package artifact: ${kotlinDeployment.artifact}`);
                 core.notice(`Kotlin package group: ${kotlinDeployment.group}`);
                 await KotlinPublisher.publish(kotlinDeployment.artifact, kotlinDeployment.group, schemaFile.info.version);
+                break;
+            case "java":
+                core.notice(`Found Java deployment`);
+
+                const javaDeployment = schemaFile["x-deploy"].java as JARDeployment
+
+                core.notice(`Java package artifact: ${javaDeployment.artifact}`);
+                core.notice(`Java package group: ${javaDeployment.group}`);
+                await JavaPublisher.publish(javaDeployment.artifact, javaDeployment.group, schemaFile.info.version);
                 break;
             case "spring":
                 core.notice(`Found Spring deployment`);

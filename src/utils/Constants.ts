@@ -8,6 +8,7 @@ export default class Constants {
     static readonly DEPLOY_TOKEN = core.getInput(Constants.DEPLOY_TOKEN_STRING);
 
     static readonly DEPLOYMENT_KOTLIN = "kotlin";
+    static readonly DEPLOYMENT_JAVA = "java";
     static readonly DEPLOYMENT_SPRING = "spring";
     static readonly DEPLOYMENT_TYPESCRIPT_ANGULAR = "typescript-angular";
 

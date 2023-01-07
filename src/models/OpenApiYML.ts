@@ -5,7 +5,7 @@ export interface OpenApiYML {
     };
 }
 
-export type DeploymentName = "kotlin" | "spring" | "typescript-angular";
+export type DeploymentName = "kotlin" | "spring" | "typescript-angular" | "java";
 
 export type Deployment = {
     [key in DeploymentName]: JARDeployment | NPMDeployment;
