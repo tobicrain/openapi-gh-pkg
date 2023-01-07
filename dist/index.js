@@ -168,8 +168,8 @@ class AngularTypescriptPublisher {
     }
     static publishCommand() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield FileService_1.FileService.write(`${Constants_1.default.DEPLOYMENT_TYPESCRIPT_ANGULAR}/.npmrc`, `//npm.pkg.github.com/:_authToken=${Constants_1.default.DEPLOY_TOKEN}`);
-            return yield (0, execute_1.execute)(`cd ${Constants_1.default.DEPLOYMENT_TYPESCRIPT_ANGULAR}; npm publish`);
+            yield FileService_1.FileService.write(`${Constants_1.default.DEPLOYMENT_TYPESCRIPT_ANGULAR}/dist/.npmrc`, `//npm.pkg.github.com/:_authToken=${Constants_1.default.DEPLOY_TOKEN}`);
+            return yield (0, execute_1.execute)(`cd ${Constants_1.default.DEPLOYMENT_TYPESCRIPT_ANGULAR}/dist; npm publish`);
         });
     }
     static installCommand() {

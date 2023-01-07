@@ -32,8 +32,8 @@ export default class AngularTypescriptPublisher {
     }
 
     static async publishCommand(): Promise<string> {
-        await FileService.write(`${Constants.DEPLOYMENT_TYPESCRIPT_ANGULAR}/.npmrc`, `//npm.pkg.github.com/:_authToken=${Constants.DEPLOY_TOKEN}`);
-        return await execute(`cd ${Constants.DEPLOYMENT_TYPESCRIPT_ANGULAR}; npm publish`);
+        await FileService.write(`${Constants.DEPLOYMENT_TYPESCRIPT_ANGULAR}/dist/.npmrc`, `//npm.pkg.github.com/:_authToken=${Constants.DEPLOY_TOKEN}`);
+        return await execute(`cd ${Constants.DEPLOYMENT_TYPESCRIPT_ANGULAR}/dist; npm publish`);
     }
 
     static async installCommand(): Promise<string> {
