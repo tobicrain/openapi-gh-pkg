@@ -59,7 +59,7 @@ function main() {
         core.notice(`Deployments: ${deploymentNames.join(", ")}`);
         core.notice(`Installing OpenAPI Generator CLI`);
         yield (0, execute_1.execute)('npm install @openapitools/openapi-generator-cli -g');
-        yield (0, execute_1.execute)('openapi-generator-cli');
+        // await execute('openapi-generator-cli');
         deploymentNames.forEach((deploymentName) => __awaiter(this, void 0, void 0, function* () {
             switch (deploymentName) {
                 case "kotlin":
