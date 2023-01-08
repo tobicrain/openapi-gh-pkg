@@ -16,6 +16,7 @@ export default class JavaPublisher {
                 `artifactVersion=${version}`,
                 `groupId=${group}`,
                 `useFeignClient=true`,
+                `useFeignClientUrl=false`,
                 `library=spring-cloud`,
                 `apiPackage=${group}.api`,
                 `modelPackage=${group}.model`,
