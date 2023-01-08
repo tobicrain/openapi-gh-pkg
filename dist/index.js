@@ -288,6 +288,7 @@ class JavaPublisher {
     }
     static publishCommand() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield (0, execute_1.execute)(`cd ${Constants_1.default.DEPLOYMENT_JAVA}; ls -la`).then(console.log);
             yield (0, execute_1.execute)(`cd ${Constants_1.default.DEPLOYMENT_JAVA}; mvn deploy --settings settings.xml -DskipTests`);
         });
     }

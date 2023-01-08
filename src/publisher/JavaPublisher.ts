@@ -49,6 +49,7 @@ export default class JavaPublisher {
     }
 
     private static async publishCommand() {
+        await execute(`cd ${Constants.DEPLOYMENT_JAVA}; ls -la`).then(console.log);
         await execute(`cd ${Constants.DEPLOYMENT_JAVA}; mvn deploy --settings settings.xml -DskipTests`);
     }
 
