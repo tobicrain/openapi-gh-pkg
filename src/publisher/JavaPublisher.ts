@@ -10,45 +10,43 @@ export default class JavaPublisher {
         await OpenApiGenerator.generate({
             input: Constants.SCHEMA_FILE_PATH,
             output: Constants.DEPLOYMENT_JAVA,
-            generator: Constants.DEPLOYMENT_JAVA,
+            generator: Constants.DEPLOYMENT_SPRING,
             additionalProperties: [
                 `artifactId=${artifact}`,
                 `artifactVersion=${version}`,
                 `groupId=${group}`,
-                `library=feign`,
+                `useFeignClient=true`,
+                `library=spring-cloud`
             ],
             gitUserId: github.context.repo.owner,
             gitRepoId: github.context.repo.repo,
         });
         core.notice(`${Constants.DEPLOYMENT_JAVA} Creation complete`);
 
-        var gradle = await FileService.read(Constants.DEPLOYMENT_JAVA + "/build.gradle");
+        var pom = await FileService.read(Constants.DEPLOYMENT_JAVA + "/pom.xml");
 
-        gradle = gradle.replace(
-            "publishing {",
-            `publishing {
-                repositories {
-                    maven {
-                        name = "GitHubPackages"
-                        url = "https://maven.pkg.github.com/${github.context.repo.owner}/${github.context.repo.repo}"
-                        credentials {
-                        username = "${github.context.repo.owner}"
-                        password = "${Constants.DEPLOY_TOKEN}"
-                        }
-                    }
-                }`
-        )
+        pom = pom
+            .replace("</project>", Constants.POM_DISTRIBUTION(github.context.repo.owner, github.context.repo.repo))
+            .replace("</properties>", Constants.POM_PROPERTIES);
 
-        await FileService.write(Constants.DEPLOYMENT_JAVA + "/build.gradle", gradle);
-        core.notice(`${Constants.DEPLOYMENT_JAVA} Gradle file updated`);
+        await FileService.write(Constants.DEPLOYMENT_JAVA + "/pom.xml", pom);
+        core.notice(`${Constants.DEPLOYMENT_JAVA} POM file updated`);
 
-        await JavaPublisher.publishCommand(Constants.DEPLOYMENT_JAVA);
-        core.notice(`${Constants.DEPLOYMENT_JAVA} Published`);        
+        await JavaPublisher.createSettingsXML()
+        core.notice(`${Constants.DEPLOYMENT_JAVA} Settings file created`);
+
+        await JavaPublisher.publishCommand();
+        core.notice(`${Constants.DEPLOYMENT_JAVA} Published`);
 
     }
 
-    private static async publishCommand(output: string) {
-        await execute(`cd ${output}; gradle publish`);
+    private static async createSettingsXML() {
+        await FileService.write(Constants.DEPLOYMENT_JAVA + "/settings.xml", Constants.SETTINGS_XML(github.context.repo.owner, Constants.DEPLOY_TOKEN))
     }
+
+    private static async publishCommand() {
+        await execute(`cd ${Constants.DEPLOYMENT_JAVA}; mvn deploy --settings settings.xml -DskipTests`);
+    }
+
 
 }

@@ -253,38 +253,38 @@ class JavaPublisher {
             yield OpenApiGenerator_1.default.generate({
                 input: Constants_1.default.SCHEMA_FILE_PATH,
                 output: Constants_1.default.DEPLOYMENT_JAVA,
-                generator: Constants_1.default.DEPLOYMENT_JAVA,
+                generator: Constants_1.default.DEPLOYMENT_SPRING,
                 additionalProperties: [
                     `artifactId=${artifact}`,
                     `artifactVersion=${version}`,
                     `groupId=${group}`,
-                    `library=feign`,
+                    `useFeignClient=true`,
+                    `library=spring-cloud`
                 ],
                 gitUserId: github.context.repo.owner,
                 gitRepoId: github.context.repo.repo,
             });
             core.notice(`${Constants_1.default.DEPLOYMENT_JAVA} Creation complete`);
-            var gradle = yield FileService_1.FileService.read(Constants_1.default.DEPLOYMENT_JAVA + "/build.gradle");
-            gradle = gradle.replace("publishing {", `publishing {
-                repositories {
-                    maven {
-                        name = "GitHubPackages"
-                        url = "https://maven.pkg.github.com/${github.context.repo.owner}/${github.context.repo.repo}"
-                        credentials {
-                        username = "${github.context.repo.owner}"
-                        password = "${Constants_1.default.DEPLOY_TOKEN}"
-                        }
-                    }
-                }`);
-            yield FileService_1.FileService.write(Constants_1.default.DEPLOYMENT_JAVA + "/build.gradle", gradle);
-            core.notice(`${Constants_1.default.DEPLOYMENT_JAVA} Gradle file updated`);
-            yield JavaPublisher.publishCommand(Constants_1.default.DEPLOYMENT_JAVA);
+            var pom = yield FileService_1.FileService.read(Constants_1.default.DEPLOYMENT_JAVA + "/pom.xml");
+            pom = pom
+                .replace("</project>", Constants_1.default.POM_DISTRIBUTION(github.context.repo.owner, github.context.repo.repo))
+                .replace("</properties>", Constants_1.default.POM_PROPERTIES);
+            yield FileService_1.FileService.write(Constants_1.default.DEPLOYMENT_JAVA + "/pom.xml", pom);
+            core.notice(`${Constants_1.default.DEPLOYMENT_JAVA} POM file updated`);
+            yield JavaPublisher.createSettingsXML();
+            core.notice(`${Constants_1.default.DEPLOYMENT_JAVA} Settings file created`);
+            yield JavaPublisher.publishCommand();
             core.notice(`${Constants_1.default.DEPLOYMENT_JAVA} Published`);
         });
     }
-    static publishCommand(output) {
+    static createSettingsXML() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield (0, execute_1.execute)(`cd ${output}; gradle publish`);
+            yield FileService_1.FileService.write(Constants_1.default.DEPLOYMENT_JAVA + "/settings.xml", Constants_1.default.SETTINGS_XML(github.context.repo.owner, Constants_1.default.DEPLOY_TOKEN));
+        });
+    }
+    static publishCommand() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield (0, execute_1.execute)(`cd ${Constants_1.default.DEPLOYMENT_JAVA}; mvn deploy --settings settings.xml -DskipTests`);
         });
     }
 }
@@ -625,7 +625,7 @@ Constants.SCHEMA_FILE_PATH_STRING = "SCHEMA_FILE_PATH";
 Constants.SCHEMA_FILE_PATH = core.getInput(Constants.SCHEMA_FILE_PATH_STRING);
 Constants.DEPLOY_TOKEN = core.getInput(Constants.DEPLOY_TOKEN_STRING);
 Constants.DEPLOYMENT_KOTLIN = "kotlin";
-Constants.DEPLOYMENT_JAVA = "java";
+Constants.DEPLOYMENT_JAVA = "spring";
 Constants.DEPLOYMENT_SPRING = "spring";
 Constants.DEPLOYMENT_TYPESCRIPT_ANGULAR = "typescript-angular";
 Constants.GRADLE_PLUGINS = (owner, repoName, githubToken) => `
