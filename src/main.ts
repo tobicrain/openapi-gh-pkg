@@ -22,7 +22,7 @@ async function main() {
 
     core.notice(`Installing OpenAPI Generator CLI`);
     await execute('npm install @openapitools/openapi-generator-cli -g');
-    // await execute('openapi-generator-cli');
+    await execute(`openapi-generator-cli validate -i ${Constants.SCHEMA_FILE_PATH}`);
 
 
     deploymentNames.forEach(async deploymentName => {

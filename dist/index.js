@@ -60,7 +60,7 @@ function main() {
         core.notice(`Deployments: ${deploymentNames.join(", ")}`);
         core.notice(`Installing OpenAPI Generator CLI`);
         yield (0, execute_1.execute)('npm install @openapitools/openapi-generator-cli -g');
-        // await execute('openapi-generator-cli');
+        yield (0, execute_1.execute)(`openapi-generator-cli validate -i ${Constants_1.default.SCHEMA_FILE_PATH}`);
         deploymentNames.forEach((deploymentName) => __awaiter(this, void 0, void 0, function* () {
             switch (deploymentName) {
                 case "kotlin":
@@ -582,9 +582,8 @@ const core = __importStar(__nccwpck_require__(2186));
 class OpenApiGenerator {
     static generate(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const command = `npx openapi-generator-cli generate -i ${options.input} -g ${options.generator} -o ${options.output} --git-user-id ${options.gitUserId} --git-repo-id ${options.gitRepoId} --additional-properties=${options.additionalProperties.join(",")}`;
+            const command = `openapi-generator-cli generate -i ${options.input} -g ${options.generator} -o ${options.output} --git-user-id ${options.gitUserId} --git-repo-id ${options.gitRepoId} --additional-properties=${options.additionalProperties.join(",")}`;
             core.notice(command);
-            console.log(command);
             return yield (0, execute_1.execute)(command);
         });
     }
