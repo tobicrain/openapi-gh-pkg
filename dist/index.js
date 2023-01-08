@@ -259,7 +259,10 @@ class JavaPublisher {
                     `artifactVersion=${version}`,
                     `groupId=${group}`,
                     `useFeignClient=true`,
-                    `library=spring-cloud`
+                    `library=spring-cloud`,
+                    `apiPackage=${group}.api`,
+                    `modelPackage=${group}.model`,
+                    `invokerPackage=${group}.api`
                 ],
                 gitUserId: github.context.repo.owner,
                 gitRepoId: github.context.repo.repo,
@@ -433,6 +436,9 @@ class SpringPublisher {
                     `artifactId=${artifact}`,
                     `artifactVersion=${version}`,
                     `groupId=${group}`,
+                    `apiPackage=${group}.api`,
+                    `modelPackage=${group}.model`,
+                    `invokerPackage=${group}.api`,
                 ],
                 gitUserId: github.context.repo.owner,
                 gitRepoId: github.context.repo.repo,
