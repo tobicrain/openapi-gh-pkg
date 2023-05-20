@@ -18,6 +18,7 @@ export default class SpringPublisher {
                 `apiPackage=${group}.api`,
                 `modelPackage=${group}.model`,
                 `invokerPackage=${group}.api`,
+                `interfaceOnly=true`,
             ],
             gitUserId: github.context.repo.owner,
             gitRepoId: github.context.repo.repo,
