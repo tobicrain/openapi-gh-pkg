@@ -26,6 +26,11 @@ export default class TypescriptAxiosPublisher {
     await TypescriptAxiosPublisher.buildCommand();
     core.notice(`Built npm package`);
 
+    // move package.json to dist
+    await execute(
+      `mv ${Constants.DEPLOYMENT_TYPESCRIPT_AXIOS}/package.json ${Constants.DEPLOYMENT_TYPESCRIPT_AXIOS}/dist/package.json`
+    );
+
     await TypescriptAxiosPublisher.publishCommand();
     core.notice(`Published npm package`);
   }
