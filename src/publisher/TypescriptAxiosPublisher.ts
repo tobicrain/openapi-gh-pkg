@@ -5,7 +5,7 @@ import OpenApiGenerator from "../service/OpenApiGenerator";
 import Constants from "../utils/Constants";
 import { execute } from "../utils/execute";
 
-export default class AngularTypescriptPublisher {
+export default class TypescriptAxiosPublisher {
   static async publish(name: string) {
     await OpenApiGenerator.generate({
       input: Constants.SCHEMA_FILE_PATH,
@@ -20,13 +20,13 @@ export default class AngularTypescriptPublisher {
     });
     core.notice(`${Constants.DEPLOYMENT_TYPESCRIPT_AXIOS} Creation complete`);
 
-    await AngularTypescriptPublisher.installCommand();
+    await TypescriptAxiosPublisher.installCommand();
     core.notice(`Installed npm packages`);
 
-    await AngularTypescriptPublisher.buildCommand();
+    await TypescriptAxiosPublisher.buildCommand();
     core.notice(`Built npm package`);
 
-    await AngularTypescriptPublisher.publishCommand();
+    await TypescriptAxiosPublisher.publishCommand();
     core.notice(`Published npm package`);
   }
 
