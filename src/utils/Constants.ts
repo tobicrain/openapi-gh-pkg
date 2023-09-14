@@ -12,7 +12,7 @@ export default class Constants {
   static readonly DEPLOYMENT_KOTLIN = "kotlin";
   static readonly DEPLOYMENT_JAVA = "java";
   static readonly DEPLOYMENT_SPRING = "spring";
-  static readonly DEPLOYMENT_TYPESCRIPT_AXIOS = "typescript-angular";
+  static readonly DEPLOYMENT_TYPESCRIPT_ANGULAR = "typescript-angular";
   static readonly DEPLOYMENT_TYPESCRIPT_AXIOS = "typescript-axios";
 
   static readonly GRADLE_PLUGINS = (
